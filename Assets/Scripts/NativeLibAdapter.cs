@@ -1,24 +1,22 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class NativeLibAdapter {
-#if !UNITY_EDITOR
-    /*
-        [DllImport("native-lib")]
-        private static extern int TestFunction_Internal();
-    */
-#elif UNITY_EDITOR
+
+#if UNITY_EDITOR
+    [DllImport("opencvPlugin")]
+    private static extern IntPtr ProcessImage(Color32[] image, int width, int height);
+#elif PLATFORM_IOS
     [DllImport("OpenCVPlugin")]
-    private static extern int TestFunction_Internal();
-#endif
-
-
-    public static int Test() {
-#if !UNITY_EDITOR
-            return TestFunction_Internal();
-#elif UNITY_EDITOR
-        return TestFunction_Internal();
+    private static extern int ProcessImage();
 #else
-            return -1;
+    [DllImport("OpenCVPlugin")]
+    private static extern int ProcessImage();
 #endif
+
+    public static string DetectObjects(Color32[] image,int width, int height) {
+        var result = ProcessImage(image,width,height);
+        return Marshal.PtrToStringAnsi(result);
     }
 }

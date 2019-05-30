@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Runtime.InteropServices;
-using System;
-
 
 public class OpenCV : MonoBehaviour {
-    void Awake() {
-    }
+
+    public CameraFeedBehavior cameraFeedBehavior;
 
     void Update() {
-        Debug.LogWarning("Test Value in C++ is " + NativeLibAdapter.Test());
+
+        Texture2D camTex = cameraFeedBehavior.GetImage();
+
+        if (camTex.width > 100) {
+            string data = NativeLibAdapter.DetectObjects(camTex.GetPixels32(),camTex.width,camTex.height);
+
+            Debug.Log(data);
+
+        }
     }
 }
