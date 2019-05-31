@@ -6,6 +6,8 @@ public class NativeLibAdapter {
 
 #if UNITY_EDITOR
     [DllImport("opencvPlugin")]
+    private static extern void Init(string labels);
+    [DllImport("opencvPlugin")]
     private static extern IntPtr ProcessImage(Color32[] image, int width, int height);
 #elif PLATFORM_IOS
     [DllImport("OpenCVPlugin")]
@@ -14,6 +16,10 @@ public class NativeLibAdapter {
     [DllImport("OpenCVPlugin")]
     private static extern int ProcessImage();
 #endif
+
+    public static void InitPlugin(string labels) {
+        Init(labels);
+    }
 
     public static string DetectObjects(Color32[] image,int width, int height) {
         var result = ProcessImage(image,width,height);

@@ -4,6 +4,13 @@ public class OpenCV : MonoBehaviour {
 
     public CameraFeedBehavior cameraFeedBehavior;
 
+    [Header("ML Assets")]
+    public TextAsset labelFile;
+
+    private void Start() {
+        NativeLibAdapter.InitPlugin(labelFile.ToString());
+    }
+
     void Update() {
 
         Texture2D camTex = cameraFeedBehavior.GetImage();

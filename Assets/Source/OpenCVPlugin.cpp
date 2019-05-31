@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <iostream>
 #include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
+#include "opencv2/xfeatures2d.hpp"
+#include "opencv2/features2d.hpp"
 #include "opencv2/tracking.hpp"
+#include "opencv2/core/ocl.hpp"
 
 using namespace std;
 using namespace cv;
@@ -178,19 +180,40 @@ void TrackDetections(Mat& frame){
     }
 }
 
+void CreateLabels(string labelFile){
+    string label;
+    stringstream ss(labelFile);
+    while(getline(ss,label,'\n')){
+        classes.push_back(label);
+    }
+}
+
+char* ConvertToChar(string str){
+    char *cstr = new char[str.length() + 1];
+    strcpy(cstr, str.c_str());
+    return cstr;
+}
+
 extern "C" {
     
+    void Init(char* labels){
+        // Load names of classes
+        CreateLabels(string(labels));
+        
+    }
+    
     char* ProcessImage(Color32* raw, int width, int height){
-
+        
         Mat frame(height, width, CV_8UC4, raw);
         
+        string classZero = to_string(classes.size());
         
-        
-        return (char*)"abc";
+        return ConvertToChar(classZero);
     }
     
     int TestFunction_Internal(){
         return 7;
     }
-
+    
 }
+

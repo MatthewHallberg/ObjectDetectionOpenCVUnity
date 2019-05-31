@@ -1,5 +1,9 @@
 ﻿<Properties StartupConfiguration="{577AB7D6-BFF3-6042-4CB5-8AE887BC42C1}|">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Resources/coco.txt">
+    <Files>
+      <File FileName="Assets/Resources/coco.txt" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
