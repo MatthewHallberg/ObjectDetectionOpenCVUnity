@@ -68,8 +68,7 @@ public class CameraFeedBehavior : MonoBehaviour {
         CameraDevice.Instance.SetFrameFormat(mPixelFormat, false);
     }
 
-    public Texture2D GetImage() {
-        CameraDevice.Instance.GetCameraImage(mPixelFormat).CopyToTexture(camTex);
-        return camTex;
+    public Image GetImage() {
+        return CameraDevice.Instance.GetCameraImage(mPixelFormat);
     }
 }

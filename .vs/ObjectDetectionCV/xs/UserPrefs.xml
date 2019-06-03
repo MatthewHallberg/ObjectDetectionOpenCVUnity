@@ -1,7 +1,8 @@
 ﻿<Properties StartupConfiguration="{577AB7D6-BFF3-6042-4CB5-8AE887BC42C1}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Resources/coco.txt">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/OpenCV.cs">
     <Files>
-      <File FileName="Assets/Resources/coco.txt" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/OpenCV.cs" Line="25" Column="5" />
+      <File FileName="Assets/Scripts/CameraFeedBehavior.cs" Line="29" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -259,6 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraFeedBehavior: {fileID: 496729018}
   labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
+  modelName: yolov3-tiny
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,6 +15,8 @@ float confThreshold = 0.2; // Confidence threshold
 float nmsThreshold = .01;  // Non-maximum suppression threshold
 int inpWidth = 416;        // was 416 Width of network's input image
 int inpHeight = 416;       // was  416 Height of network's input image
+int framecount = 0;
+int modelInterval = 10;
 
 vector<Mat> networkOutput;
 Net net;
@@ -26,13 +28,6 @@ void DrawDection(string label, Rect rect, Mat& frame){
     //Display the label at the top of the bounding box
     putText(frame, label, Point(rect.x, rect.y), FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,255),3);
 }
-
-struct Color32 {
-    uchar r;
-    uchar g;
-    uchar b;
-    uchar a;
-};
 
 class Detection {
 public:
@@ -68,7 +63,6 @@ public:
 };
 
 vector<Detection> detections;
-
 // Draw the predicted bounding box
 void drawPred(int classId, float conf, int left, int top, int right, int bottom, Mat& frame){
     //Draw a rectangle displaying the bounding box
@@ -157,15 +151,15 @@ void postprocess(Mat& frame, const vector<Mat>& outs){
 void RunModel(Mat& frame){
     // Create a 4D blob from a frame.
     blob.deallocate();
-    blobFromImage(frame, blob, 1/255.0, cvSize(inpWidth, inpHeight), Scalar(0,0,0), true, false);
+    blobFromImage(frame, blob, 1/255.0, cvSize(inpWidth, inpHeight), Scalar(0,0,0), /*swapRB*/false, /*crop*/false);
     
     //Sets the input to the network
     net.setInput(blob);
     
     // Runs the forward pass to get output of the output layers
     net.forward(networkOutput, getOutputsNames(net));
-    
-    // Remove the bounding boxes with low confidence
+    //
+    //    // Remove the bounding boxes with low confidence
     postprocess(frame, networkOutput);
 }
 
@@ -196,24 +190,36 @@ char* ConvertToChar(string str){
 
 extern "C" {
     
-    void Init(char* labels){
+    void Init(char* labels, char* pathToConfig, char* pathToWeights){
         // Load names of classes
         CreateLabels(string(labels));
         
+        // Load the network
+        net = readNetFromDarknet(string(pathToConfig), string(pathToWeights));
+        net.setPreferableBackend(DNN_BACKEND_OPENCV);
+        net.setPreferableTarget(DNN_TARGET_CPU);
     }
     
-    char* ProcessImage(Color32* raw, int width, int height){
+    char* ProcessImage(uchar* raw, int width, int height){
         
-        Mat frame(height, width, CV_8UC4, raw);
+        Mat cameraFrame(height, width, CV_8UC4, raw);
+        cvtColor(cameraFrame, cameraFrame, COLOR_RGBA2BGR);
         
-        string classZero = to_string(classes.size());
+        //        if (framecount % modelInterval == 0){
+        RunModel(cameraFrame);
+        //        } else {
+        //TrackDetections(cameraFrame);
+        //        }
         
-        return ConvertToChar(classZero);
+        framecount++;
+        
+        string blah = "1";
+        //        string blah2 = to_string(cameraFrame.cols);
+        if (detections.size() > 0){
+            blah = detections[0].label;
+        }
+        
+        return ConvertToChar(blah);
     }
-    
-    int TestFunction_Internal(){
-        return 7;
-    }
-    
 }
 
