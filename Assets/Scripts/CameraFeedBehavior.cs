@@ -4,13 +4,9 @@ using Vuforia;
 public class CameraFeedBehavior : MonoBehaviour {
 
     PIXEL_FORMAT mPixelFormat = PIXEL_FORMAT.UNKNOWN_FORMAT;
-
-    Texture2D camTex;
-
+    
     void Start() {
-
-        camTex = new Texture2D(1, 1);
-
+    
     #if UNITY_EDITOR
             mPixelFormat = PIXEL_FORMAT.RGBA8888;
     #else
@@ -66,6 +62,10 @@ public class CameraFeedBehavior : MonoBehaviour {
     void UnregisterFormat() {
         Debug.Log("Unregistering camera pixel format " + mPixelFormat.ToString());
         CameraDevice.Instance.SetFrameFormat(mPixelFormat, false);
+    }
+
+    public bool HasAlphaChannel() {
+        return mPixelFormat == PIXEL_FORMAT.RGBA8888;
     }
 
     public Image GetImage() {

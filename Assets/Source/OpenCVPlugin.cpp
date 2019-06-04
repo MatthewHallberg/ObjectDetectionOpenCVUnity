@@ -23,12 +23,6 @@ Net net;
 vector<string> classes;
 Mat blob;
 
-void DrawDection(string label, Rect rect, Mat& frame){
-    rectangle(frame, rect, Scalar(0, 0, 255),5);
-    //Display the label at the top of the bounding box
-    putText(frame, label, Point(rect.x, rect.y), FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,255),3);
-}
-
 class Detection {
 public:
     string label;
@@ -51,13 +45,8 @@ public:
         delete tracker;
     }
     
-    void Draw(Mat& frame){
-        DrawDection(label,box,frame);
-    }
-    
     bool UpdateTracker(Mat& frame){
         bool success = tracker->update(frame, trackingBox);
-        if (success) DrawDection(label,trackingBox,frame);
         return success;
     }
 };
@@ -75,7 +64,6 @@ void drawPred(int classId, float conf, int left, int top, int right, int bottom,
     }
     //add to current list
     Detection det = Detection(label,rect,frame);
-    det.Draw(frame);
     detections.push_back(det);
 }
 
@@ -158,8 +146,8 @@ void RunModel(Mat& frame){
     
     // Runs the forward pass to get output of the output layers
     net.forward(networkOutput, getOutputsNames(net));
-    //
-    //    // Remove the bounding boxes with low confidence
+    
+    // Remove the bounding boxes with low confidence
     postprocess(frame, networkOutput);
 }
 
@@ -200,26 +188,37 @@ extern "C" {
         net.setPreferableTarget(DNN_TARGET_CPU);
     }
     
-    char* ProcessImage(uchar* raw, int width, int height){
-        
-        Mat cameraFrame(height, width, CV_8UC4, raw);
-        cvtColor(cameraFrame, cameraFrame, COLOR_RGBA2BGR);
-        
-        //        if (framecount % modelInterval == 0){
-        RunModel(cameraFrame);
-        //        } else {
-        //TrackDetections(cameraFrame);
-        //        }
+    char* ProcessImage(uchar* raw, int width, int height, bool isRGBA, int detectionInterval){
         
         framecount++;
         
-        string blah = "1";
-        //        string blah2 = to_string(cameraFrame.cols);
-        if (detections.size() > 0){
-            blah = detections[0].label;
+        Mat cameraFrame(height, width, CV_8UC4, raw);
+        
+        //handle different pixel formats
+        if (isRGBA){
+            cvtColor(cameraFrame, cameraFrame, COLOR_RGBA2BGR);
+        } else {
+            cvtColor(cameraFrame, cameraFrame, COLOR_RGB2BGR);
         }
         
-        return ConvertToChar(blah);
+        //run detection based on interval, track every other frame
+        modelInterval = detectionInterval;
+        if (framecount % modelInterval == 0){
+            RunModel(cameraFrame);
+        } else {
+            TrackDetections(cameraFrame);
+        }
+        
+        //return detections in comma seperated string
+        string detectionList = "";
+        for(int i = 0; i < detections.size(); i++){
+            Rect2d box = detections[i].trackingBox;
+            detectionList += detections[i].label + ",";
+            detectionList += to_string(box.x) + "," + to_string(box.y) + ",";
+            detectionList += to_string(box.width) + "," + to_string(box.height) + ",";
+        }
+        
+        return ConvertToChar(detectionList);
     }
 }
 

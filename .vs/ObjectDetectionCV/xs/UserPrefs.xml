@@ -1,8 +1,8 @@
 ﻿<Properties StartupConfiguration="{577AB7D6-BFF3-6042-4CB5-8AE887BC42C1}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/OpenCV.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DetectionManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/OpenCV.cs" Line="25" Column="5" />
-      <File FileName="Assets/Scripts/CameraFeedBehavior.cs" Line="29" Column="1" />
+      <File FileName="Assets/Scripts/OpenCV.cs" Line="46" Column="60" />
+      <File FileName="Assets/Scripts/DetectionManager.cs" Line="17" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

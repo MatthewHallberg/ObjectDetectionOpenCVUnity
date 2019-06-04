@@ -120,6 +120,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &425900973
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 425900976}
+  - component: {fileID: 425900975}
+  - component: {fileID: 425900974}
+  m_Layer: 0
+  m_Name: OpenCVDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &425900974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425900973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a298e4de8d584a6c89edef6579f8b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &425900975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425900973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 549b002de129e4165a22324b085e6507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraFeedBehavior: {fileID: 496729018}
+  detectionManager: {fileID: 425900974}
+  DetectionInterval: 30
+  labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
+  modelName: yolov3-tiny
+--- !u!4 &425900976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425900973}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &496729012
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +195,6 @@ GameObject:
   - component: {fileID: 496729014}
   - component: {fileID: 496729013}
   - component: {fileID: 496729018}
-  - component: {fileID: 496729019}
   m_Layer: 0
   m_Name: ARCamera
   m_TagString: Untagged
@@ -245,21 +305,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d08ce72d992454798062dfdc9b847e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &496729019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496729012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 549b002de129e4165a22324b085e6507, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraFeedBehavior: {fileID: 496729018}
-  labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
-  modelName: yolov3-tiny
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
