@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DetectionManager : MonoBehaviour {
 
+    public GUIStyle style;
+
     struct Detection {
         public string label;
         public Rect rect;
@@ -11,7 +13,7 @@ public class DetectionManager : MonoBehaviour {
 
     List<Detection> currDetections = new List<Detection>();
 
-    public void DrawDetections(string detections) {
+    public void DrawDetections(string detections, int imgWidth, int imgHeight) {
         currDetections.Clear();
         if (detections.Length > 1) {
             string[] detectionsSplit = detections.Split(',');
@@ -26,10 +28,10 @@ public class DetectionManager : MonoBehaviour {
                 float xMax = xMin + width;
                 float yMax = yMin + height;
                 //translate to screen space
-                //xMin *= Screen.width;
-                //xMax *= Screen.width;
-                //yMin *= Screen.height;
-                //yMax *= Screen.height;
+                xMin = xMin * Screen.width / imgWidth;
+                xMax = xMax * Screen.width / imgWidth;
+                yMin = yMin * Screen.height / imgHeight;
+                yMax = yMax * Screen.height / imgHeight;
                 //add to detection list to be drawn
                 Rect rect = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
                 Detection detection = new Detection {
@@ -37,7 +39,6 @@ public class DetectionManager : MonoBehaviour {
                     rect = rect
                 };
                 currDetections.Add(detection);
-                Debug.Log(label);
             }
         }
     }
@@ -45,7 +46,7 @@ public class DetectionManager : MonoBehaviour {
     void OnGUI() {
         try {
             foreach (Detection item in currDetections) {
-                GUI.Box(item.rect, item.label);
+                GUI.Box(item.rect, item.label,style);
             }
         } catch (InvalidOperationException e) {
             Debug.Log("Collection modified during Execution " + e);

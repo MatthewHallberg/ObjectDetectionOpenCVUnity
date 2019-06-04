@@ -41,7 +41,7 @@ public class OpenCV : MonoBehaviour {
                     cameraFeedBehavior.HasAlphaChannel(),
                     DetectionInterval
                 );
-                detectionManager.DrawDetections(_data);
+                detectionManager.DrawDetections(_data, camImage.Width, camImage.Height);
             }
             yield return new WaitForEndOfFrame();
         }
