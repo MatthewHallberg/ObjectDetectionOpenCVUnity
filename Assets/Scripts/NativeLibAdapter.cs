@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 public static class NativeLibAdapter {
 
 #if UNITY_EDITOR
-    [DllImport("opencvPlugin")]
+    [DllImport("macPlugin")]
     private static extern void Init(string labels, string pathToConfig, string pathToWeights);
-    [DllImport("opencvPlugin")]
+    [DllImport("macPlugin")]
     private static extern IntPtr ProcessImage(byte[] image, int width, int height, bool isRGBA, int detectionInterval);
 #elif PLATFORM_IOS
     [DllImport("OpenCVPlugin")]
