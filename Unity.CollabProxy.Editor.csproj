@@ -675,6 +675,11 @@
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryLight.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Unity.CollabProxy.Editor.asmdef" />
     <None Include="Packages\com.unity.collab-proxy\Tests\Editor\Unity.CollabProxy.EditorTests.asmdef" />
+    <None Include="Packages\com.unity.multiplayer-hlapi\Editor\Tools\Weaver\com.unity.multiplayer-weaver.Editor.asmdef" />
+    <None Include="Packages\com.unity.multiplayer-hlapi\Editor\com.unity.multiplayer-hlapi.Editor.asmdef" />
+    <None Include="Packages\com.unity.multiplayer-hlapi\Runtime\com.unity.multiplayer-hlapi.Runtime.asmdef" />
+    <None Include="Packages\com.unity.multiplayer-hlapi\Tests\Editor\com.unity.multiplayer-hlapi.EditorTests.asmdef" />
+    <None Include="Packages\com.unity.multiplayer-hlapi\Tests\Runtime\com.unity.multiplayer-hlapi.Tests.asmdef" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Dark.uss" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Light.uss" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\Alert.uxml" />
@@ -704,6 +709,12 @@
     <None Include="Packages\com.unity.timeline\Runtime\Unity.Timeline.asmdef" />
     <None Include="Packages\com.unity.timeline\Tests\Editor\Unity.Timeline.Package.EditorTests.asmdef" />
     <None Include="Packages\com.unity.timeline\Tests\PlayMode\Unity.Timeline.Package.Tests.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Editor\LegacyInputHelpersEditor.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Editor\TrackedPoseDriver\UnityEditor.SpatialTracking.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Runtime\LegacyInputHelpers.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Runtime\TrackedPoseDriver\UnityEngine.SpatialTracking.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Tests\Editor\LegacyInputHelpersEditorTests.asmdef" />
+    <None Include="Packages\com.unity.xr.legacyinputhelpers\Tests\Runtime\TrackedPoseDriver\UnityEngine.SpatialTracking.Tests.asmdef" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
