@@ -9,11 +9,15 @@ public static class NativeLibAdapter {
     [DllImport("macPlugin")]
     private static extern IntPtr ProcessImage(byte[] image, int width, int height, bool isRGBA, int detectionInterval);
 #elif PLATFORM_IOS
-    [DllImport("OpenCVPlugin")]
-    private static extern int ProcessImage();
+    [DllImport("__Internal")]
+    private static extern void Init(string labels, string pathToConfig, string pathToWeights);
+    [DllImport("__Internal")]
+    private static extern IntPtr ProcessImage(byte[] image, int width, int height, bool isRGBA, int detectionInterval);
 #else
-    [DllImport("OpenCVPlugin")]
-    private static extern int ProcessImage();
+    [DllImport("androidPlugin")]
+    private static extern void Init(string labels, string pathToConfig, string pathToWeights);
+    [DllImport("androidPlugin")]
+    private static extern IntPtr ProcessImage(byte[] image, int width, int height, bool isRGBA, int detectionInterval);
 #endif
 
     public static void InitPlugin(string labels, string pathToConfig, string pathToWeights) {
@@ -21,7 +25,7 @@ public static class NativeLibAdapter {
     }
 
     public static string DetectObjects(byte[] image, int width, int height, bool isRGBA, int detectionInterval) {
-    var result = ProcessImage(image,width,height,isRGBA,detectionInterval);
+        var result = ProcessImage(image,width,height,isRGBA,detectionInterval);
         return Marshal.PtrToStringAnsi(result);
     }
 }

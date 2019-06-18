@@ -1,0 +1,16 @@
+{
+    "name": "Unity.XR.ARFoundation",
+    "references": [
+        "Unity.XR.ARSubsystems",
+        "UnityEngine.SpatialTracking"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

@@ -1,74 +1,41 @@
 ﻿using UnityEngine;
-using Vuforia;
+using UnityEngine.UI;
 
 public class CameraFeedBehavior : MonoBehaviour {
 
-    PIXEL_FORMAT mPixelFormat = PIXEL_FORMAT.UNKNOWN_FORMAT;
-    
+    public RawImage camImageTex;
+    public AspectRatioFitter ratioFitter;
+
+    ImageData imageData = new ImageData();
+    WebCamTexture webCamTex;
+    Texture2D tempTex;
+    bool textureHasAlpha;
+
     void Start() {
-    
-    #if UNITY_EDITOR
-            mPixelFormat = PIXEL_FORMAT.RGBA8888;
-    #else
-            mPixelFormat = PIXEL_FORMAT.RGB888; // Use RGB888 for mobile
-    #endif
-
-        // Register Vuforia life-cycle callbacks
-        VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
-        VuforiaARController.Instance.RegisterOnPauseCallback(OnPause);
-    }
-    
-    void OnVuforiaStarted() {
-
-        // Try register camera image format
-        if (CameraDevice.Instance.SetFrameFormat(mPixelFormat, true)) {
-            Debug.Log("Successfully registered pixel format " + mPixelFormat.ToString());
-        } else {
-            Debug.LogError(
-                "\nFailed to register pixel format: " + mPixelFormat.ToString() +
-                "\nThe format may be unsupported by your device." +
-                "\nConsider using a different pixel format.\n");
-        }
-
+        textureHasAlpha = Application.isEditor;
+        webCamTex = new WebCamTexture();
+        camImageTex.texture = webCamTex;
+        webCamTex.Play();
     }
 
-    /// <summary>
-    /// Called when app is paused / resumed
-    /// </summary>
-    void OnPause(bool paused) {
-        if (paused) {
-            Debug.Log("App was paused");
-            UnregisterFormat();
-        } else {
-            Debug.Log("App was resumed");
-            RegisterFormat();
-        }
+    void Update() {
+        //set UI cam image aspect ratio
+        float aspectRatio = (float)webCamTex.width / (float)webCamTex.height;
+        ratioFitter.aspectRatio = aspectRatio;
+        //get webcamtexture out of B8G8R8A8_UNorm format
+        tempTex = new Texture2D(webCamTex.width, webCamTex.height, TextureFormat.RGBA32, false);
+        tempTex.SetPixels32(webCamTex.GetPixels32());
+        //load data for other thread
+        imageData.data = tempTex.GetRawTextureData();
+        imageData.width = tempTex.width;
+        imageData.height = tempTex.height;
     }
 
-    /// <summary>
-    /// Register the camera pixel format
-    /// </summary>
-    void RegisterFormat() {
-        if (CameraDevice.Instance.SetFrameFormat(mPixelFormat, true)) {
-            Debug.Log("Successfully registered camera pixel format " + mPixelFormat.ToString());
-        } else {
-            Debug.LogError("Failed to register camera pixel format " + mPixelFormat.ToString());
-        }
-    }
-
-    /// <summary>
-    /// Unregister the camera pixel format (e.g. call this when app is paused)
-    /// </summary>
-    void UnregisterFormat() {
-        Debug.Log("Unregistering camera pixel format " + mPixelFormat.ToString());
-        CameraDevice.Instance.SetFrameFormat(mPixelFormat, false);
+    public ImageData GetCamImage() {
+        return imageData;
     }
 
     public bool HasAlphaChannel() {
-        return mPixelFormat == PIXEL_FORMAT.RGBA8888;
-    }
-
-    public Image GetImage() {
-        return CameraDevice.Instance.GetCameraImage(mPixelFormat);
+        return textureHasAlpha;
     }
 }

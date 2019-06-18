@@ -1,22 +1,22 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Vuforia;
 using System.Threading;
 
 public class OpenCV : MonoBehaviour {
 
+    const int DetectionInterval = 10;
+
     public CameraFeedBehavior cameraFeedBehavior;
     public DetectionManager detectionManager;
-
-    public int DetectionInterval = 30;
 
     [Header("ML Assets")]
     public TextAsset labelFile;
     public string modelName = "yolov3-tiny";
 
-    Image camImage;
+    ImageData camImage;
     Thread detection;
     string detectionData = "";
+    bool runThread = true;
 
     void Start() {
         string pathToConfig = System.IO.Path.Combine(Application.streamingAssetsPath, modelName + ".cfg");
@@ -37,14 +37,19 @@ public class OpenCV : MonoBehaviour {
         detection.Start();
     }
 
+    void OnApplicationQuit() {
+        runThread = false;
+        Debug.Log("Stopping detection thread...");
+    }
+
     void DetectionThread() {
-        while (true) {
-            camImage = cameraFeedBehavior.GetImage();
-            if (camImage != null && camImage.Width > 100) {
+        while (runThread) {
+            camImage = cameraFeedBehavior.GetCamImage();
+            if (camImage.width > 100) {
                 detectionData = NativeLibAdapter.DetectObjects(
-                    camImage.Pixels,
-                    camImage.Width,
-                    camImage.Height,
+                    camImage.data,
+                    camImage.width,
+                    camImage.width,
                     cameraFeedBehavior.HasAlphaChannel(),
                     DetectionInterval
                 );
@@ -55,7 +60,7 @@ public class OpenCV : MonoBehaviour {
     IEnumerator DetectRoutine() {
         yield return new WaitForEndOfFrame();
         while (true) {
-            detectionManager.DrawDetections(detectionData, camImage.Width, camImage.Height);
+            detectionManager.DrawDetections(detectionData, camImage.width, camImage.height);
             yield return new WaitForEndOfFrame();
         }
     }
