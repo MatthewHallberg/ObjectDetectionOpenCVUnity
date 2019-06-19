@@ -4,7 +4,7 @@ using System.Threading;
 
 public class OpenCV : MonoBehaviour {
 
-    const int DetectionInterval = 10;
+    public int DetectionInterval = 15;
 
     public CameraFeedBehavior cameraFeedBehavior;
     public DetectionManager detectionManager;
@@ -39,13 +39,15 @@ public class OpenCV : MonoBehaviour {
 
     void OnApplicationQuit() {
         runThread = false;
-        Debug.Log("Stopping detection thread...");
+        Debug.Log("stopping thread...");
     }
 
     void DetectionThread() {
+        Thread.Sleep(2000);
         while (runThread) {
             camImage = cameraFeedBehavior.GetCamImage();
             if (camImage.width > 100) {
+                DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
                 detectionData = NativeLibAdapter.DetectObjects(
                     camImage.data,
                     camImage.width,
@@ -54,6 +56,8 @@ public class OpenCV : MonoBehaviour {
                     DetectionInterval
                 );
             }
+            cameraFeedBehavior.DoneProcessing();
+            Thread.Sleep(20);
         }
     }
 

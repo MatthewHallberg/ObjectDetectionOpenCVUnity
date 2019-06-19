@@ -38,13 +38,13 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -600,7 +600,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraFeedBehavior: {fileID: 24932547}
   detectionManager: {fileID: 425900974}
-  DetectionInterval: 20
   labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
   modelName: yolov3-tiny
 --- !u!4 &425900976

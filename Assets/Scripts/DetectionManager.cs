@@ -21,7 +21,6 @@ public class DetectionManager : MonoBehaviour {
             string[] detectionsSplit = detections.Split(',');
             for (int i = 0; i < detectionsSplit.Length - 1; i += 5) {
                 string label = detectionsSplit[i];
-                Debug.Log(label);
                 //get screen width and height base on orientation
                 int ScreenHeight = Screen.height;
                 int ScreenWidth = Screen.width;
@@ -39,8 +38,8 @@ public class DetectionManager : MonoBehaviour {
                     //landscape
                     xMin = xMin * ScreenWidth / imgWidth;
                     xMax = xMax * ScreenWidth / imgWidth;
-                    yMin = yMin * ScreenHeight / imgHeight;
-                    yMax = yMax * ScreenHeight / imgHeight;
+                    yMin = Screen.height - (yMin * ScreenHeight / imgHeight);
+                    yMax = Screen.height - (yMax * ScreenHeight / imgHeight);
                 } else {
                     //portrait
 
