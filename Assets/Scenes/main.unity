@@ -515,15 +515,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 425900973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a298e4de8d584a6c89edef6579f8b55, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b0425516bdaf45b082adb59dd79907c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   style:
-    m_Name: BoxStyle
+    m_Name: 
     m_Normal:
       m_Background: {fileID: 2800000, guid: 3da6f73dfa9c74f74be8add6a242aaeb, type: 3}
       m_ScaledBackgrounds: []
-      m_TextColor: {r: 0.18039216, g: 0.9607843, b: 0.93333334, a: 1}
+      m_TextColor: {r: 0.1462264, g: 1, b: 0.9548003, a: 1}
     m_Hover:
       m_Background: {fileID: 0}
       m_ScaledBackgrounds: []
@@ -539,7 +539,7 @@ MonoBehaviour:
     m_OnNormal:
       m_Background: {fileID: 0}
       m_ScaledBackgrounds: []
-      m_TextColor: {r: 0.33962262, g: 0.15859735, b: 0.15859735, a: 1}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_OnHover:
       m_Background: {fileID: 0}
       m_ScaledBackgrounds: []
@@ -553,39 +553,38 @@ MonoBehaviour:
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Border:
-      m_Left: 2
-      m_Right: 2
-      m_Top: 2
-      m_Bottom: 2
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
     m_Margin:
-      m_Left: 5
-      m_Right: 5
-      m_Top: 5
-      m_Bottom: 5
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
     m_Padding:
-      m_Left: 5
-      m_Right: 5
-      m_Top: 5
-      m_Bottom: 5
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
     m_Overflow:
       m_Left: 0
       m_Right: 0
       m_Top: 0
       m_Bottom: 0
-    m_Font: {fileID: 12800000, guid: 6e4a1744cf113994799d3e46a7c45d99, type: 3}
-    m_FontSize: 50
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 55
     m_FontStyle: 1
-    m_Alignment: 7
+    m_Alignment: 4
     m_WordWrap: 0
     m_RichText: 0
     m_TextClipping: 0
     m_ImagePosition: 0
-    m_ContentOffset: {x: 0, y: 100}
+    m_ContentOffset: {x: 0, y: 0}
     m_FixedWidth: 0
     m_FixedHeight: 0
-    m_StretchWidth: 1
-    m_StretchHeight: 1
-  add: 1
+    m_StretchWidth: 0
+    m_StretchHeight: 0
 --- !u!114 &425900975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,7 +599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DetectionInterval: 15
   cameraFeedBehavior: {fileID: 24932547}
-  detectionManager: {fileID: 425900974}
+  detectionBoxes: {fileID: 425900974}
   labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
   modelName: yolov3-tiny
 --- !u!4 &425900976

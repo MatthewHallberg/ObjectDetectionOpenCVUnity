@@ -7,7 +7,7 @@ public class OpenCV : MonoBehaviour {
     public int DetectionInterval = 15;
 
     public CameraFeedBehavior cameraFeedBehavior;
-    public DetectionManager detectionManager;
+    public DetectionBoxes detectionBoxes;
 
     [Header("ML Assets")]
     public TextAsset labelFile;
@@ -64,7 +64,7 @@ public class OpenCV : MonoBehaviour {
     IEnumerator DetectRoutine() {
         yield return new WaitForEndOfFrame();
         while (true) {
-            detectionManager.DrawDetections(detectionData, camImage.width, camImage.height);
+            detectionBoxes.DrawDetections(detectionData, camImage.width, camImage.height);
             yield return new WaitForEndOfFrame();
         }
     }

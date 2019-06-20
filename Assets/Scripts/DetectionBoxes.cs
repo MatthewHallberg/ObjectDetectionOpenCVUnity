@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetectionManager : MonoBehaviour {
+public class DetectionBoxes : MonoBehaviour {
 
     public GUIStyle style;
     
@@ -23,42 +23,44 @@ public class DetectionManager : MonoBehaviour {
                 float ScreenHeight = Screen.height;
                 float ScreenWidth = Screen.width;
                 //landscape
-                float width = float.Parse(detectionsSplit[i + 3]);
-                float height = float.Parse(detectionsSplit[i + 4]);
+                float boxWidth = float.Parse(detectionsSplit[i + 3]);
+                float boxHeight = float.Parse(detectionsSplit[i + 4]);
                 //get min max coordinates of box
                 float xMin = float.Parse(detectionsSplit[i + 1]);
                 float yMin = float.Parse(detectionsSplit[i + 2]);
-                float xMax = xMin + width;
-                float yMax = yMin + height;
+                float xMax = xMin + boxWidth;
+                float yMax = yMin + boxHeight;
 
                 float newHeight = imgHeight / imgWidth * ScreenWidth;
                 float newWidth = imgWidth / imgHeight * ScreenHeight;
 
-                ///Translate to screen space
+                float vertOverflow = (newHeight - ScreenHeight) / 2;
+                float horOverflow = (newWidth - ScreenWidth) / 2;
+
+                //Translate to screen space
+                //Opencv draws from bottom of screen Unity draws from top
                 if (ScreenWidth > ScreenHeight) {
                     //landscape
                     xMin = xMin * ScreenWidth / imgWidth;
                     xMax = xMax * ScreenWidth / imgWidth;
 
-                    float overflow = (newHeight - ScreenHeight) / 2;
-                    height = height * newHeight / imgHeight;
+                    boxHeight = boxHeight * newHeight / imgHeight;
                     yMin = yMin * newHeight / imgHeight;
-                    yMin = newHeight - yMin - overflow;
+                    yMin = newHeight - yMin - vertOverflow;
+                    yMax = yMin - boxHeight;
 
                 } else {
                     //portrait
                     yMin = yMin * ScreenHeight / imgHeight;
                     yMax = yMax * ScreenHeight / imgHeight;
-                    height = height * ScreenHeight / imgHeight;
+                    yMin = ScreenHeight - yMin;
+                    yMax = ScreenHeight - yMax;
 
-                    float overflow = (newWidth - ScreenWidth) / 2;
-                    width = width * newWidth / imgWidth;
                     xMin = xMin * newWidth / imgWidth;
-                    xMin = xMin + overflow;
+                    xMin = xMin - horOverflow;
+                    boxWidth = boxWidth * newWidth / imgWidth;
+                    xMax = xMin + boxWidth;
                 }
-
-                //Opencv draws from bottom of screen Unity draws from top
-                yMax = yMin - height;
 
                 //add to detection list to be drawn
                 Rect rect = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
