@@ -575,12 +575,12 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: 6e4a1744cf113994799d3e46a7c45d99, type: 3}
     m_FontSize: 50
     m_FontStyle: 1
-    m_Alignment: 1
+    m_Alignment: 7
     m_WordWrap: 0
     m_RichText: 0
     m_TextClipping: 0
     m_ImagePosition: 0
-    m_ContentOffset: {x: 0, y: 25}
+    m_ContentOffset: {x: 0, y: 100}
     m_FixedWidth: 0
     m_FixedHeight: 0
     m_StretchWidth: 1
@@ -598,6 +598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 549b002de129e4165a22324b085e6507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DetectionInterval: 15
   cameraFeedBehavior: {fileID: 24932547}
   detectionManager: {fileID: 425900974}
   labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}

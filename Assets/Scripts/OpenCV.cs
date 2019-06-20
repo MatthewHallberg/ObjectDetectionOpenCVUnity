@@ -43,7 +43,7 @@ public class OpenCV : MonoBehaviour {
     }
 
     void DetectionThread() {
-        Thread.Sleep(2000);
+        Thread.Sleep(4000);
         while (runThread) {
             camImage = cameraFeedBehavior.GetCamImage();
             if (camImage.width > 100) {
