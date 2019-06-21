@@ -18,18 +18,19 @@ public class DetectionBoxes : MonoBehaviour {
         if (detections.Length > 1) {
             string[] detectionsSplit = detections.Split(',');
             for (int i = 0; i < detectionsSplit.Length - 1; i += 5) {
+
                 string label = detectionsSplit[i];
-                //get screen width and height base on orientation
-                float ScreenHeight = Screen.height;
-                float ScreenWidth = Screen.width;
-                //landscape
+
+                //get box coordinates from opencv
                 float boxWidth = float.Parse(detectionsSplit[i + 3]);
                 float boxHeight = float.Parse(detectionsSplit[i + 4]);
-                //get min max coordinates of box
                 float xMin = float.Parse(detectionsSplit[i + 1]);
                 float yMin = float.Parse(detectionsSplit[i + 2]);
                 float xMax = xMin + boxWidth;
                 float yMax = yMin + boxHeight;
+
+                float ScreenHeight = Screen.height;
+                float ScreenWidth = Screen.width;
 
                 float newHeight = imgHeight / imgWidth * ScreenWidth;
                 float newWidth = imgWidth / imgHeight * ScreenHeight;
@@ -48,7 +49,6 @@ public class DetectionBoxes : MonoBehaviour {
                     yMin = yMin * newHeight / imgHeight;
                     yMin = newHeight - yMin - vertOverflow;
                     yMax = yMin - boxHeight;
-
                 } else {
                     //portrait
                     yMin = yMin * ScreenHeight / imgHeight;

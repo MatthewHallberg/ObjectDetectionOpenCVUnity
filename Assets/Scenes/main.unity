@@ -238,6 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camImageTex: {fileID: 19725809}
   ratioFitter: {fileID: 19725811}
+  aRCameraManager: {fileID: 259115209}
 --- !u!4 &24932548
 Transform:
   m_ObjectHideFlags: 0
@@ -453,6 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 403680791}
   - component: {fileID: 403680790}
+  - component: {fileID: 403680792}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -488,6 +490,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &403680792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403680789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3859a92a05d4f5d418cb6ca605290e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AttemptUpdate: 1
 --- !u!1 &425900973
 GameObject:
   m_ObjectHideFlags: 0
