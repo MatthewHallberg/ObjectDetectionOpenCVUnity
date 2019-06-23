@@ -16,10 +16,8 @@ int inpHeight = 416;       // was  416 Height of network's input image
 int framecount = 0;
 int modelInterval = 10;
 
-vector<Mat> networkOutput;
-Net net;
 vector<string> classes;
-Mat blob;
+Net net;
 
 class Detection {
 public:
@@ -43,7 +41,7 @@ public:
         delete tracker;
     }
     
-    bool UpdateTracker(Mat& frame){
+    bool UpdateTracker(Mat frame){
         bool success = tracker->update(frame, trackingBox);
         return success;
     }
@@ -66,7 +64,7 @@ void drawPred(int classId, float conf, int left, int top, int right, int bottom,
 }
 
 // Get the names of the output layers
-vector<String> getOutputsNames(const Net& net){
+vector<String> getOutputsNames(const Net net){
     static vector<String> names;
     if (names.empty()){
         //Get the indices of the output layers, i.e. the layers with unconnected outputs
@@ -84,7 +82,7 @@ vector<String> getOutputsNames(const Net& net){
 }
 
 // Remove the bounding boxes with low confidence using non-maxima suppression
-void postprocess(Mat& frame, const vector<Mat>& outs){
+void postprocess(Mat& frame, const vector<Mat> outs){
     vector<int> classIds;
     vector<float> confidences;
     vector<Rect> boxes;
@@ -135,18 +133,24 @@ void postprocess(Mat& frame, const vector<Mat>& outs){
 }
 
 void RunModel(Mat& frame){
+    //resize image here because if we let blobFromImage do it we get a crash
+    Size size(inpWidth,inpHeight);
+    Mat dst;
+    resize(frame,dst,size);
     // Create a 4D blob from a frame.
-    blob.deallocate();
-    blobFromImage(frame, blob, 1/255.0, cvSize(inpWidth, inpHeight), Scalar(0,0,0), /*swapRB*/false, /*crop*/false);
+    Mat blob;
+    blobFromImage(dst, blob, 1/255.0, size, Scalar(0,0,0), /*swapRB*/false, /*crop*/false);
     
     //Sets the input to the network
     net.setInput(blob);
     
     // Runs the forward pass to get output of the output layers
+    vector<Mat> networkOutput;
     net.forward(networkOutput, getOutputsNames(net));
     
     // Remove the bounding boxes with low confidence
     postprocess(frame, networkOutput);
+    blob.deallocate();
 }
 
 void TrackDetections(Mat& frame){
@@ -183,22 +187,21 @@ extern "C" {
         // Load the network
         net = readNetFromDarknet(string(pathToConfig), string(pathToWeights));
         net.setPreferableBackend(DNN_BACKEND_OPENCV);
-        net.setPreferableTarget(DNN_TARGET_CPU);
+        net.setPreferableTarget(DNN_TARGET_OPENCL);
     }
     
-    char* ProcessImage(uchar* raw, int width, int height, bool isRGBA, int detectionInterval){
+    char* ProcessImage(unsigned char* bytes, int width, int height, bool isRGBA, int detectionInterval){
         
         framecount++;
         
         Mat cameraFrame;
-        
+        void* byteToVoid = static_cast<void*>(bytes);
         //handle different pixel formats
         if (isRGBA){
-            cameraFrame = Mat(height, width, CV_8UC4, raw);
-            cvtColor(cameraFrame, cameraFrame, COLOR_RGBA2BGR);
+            cameraFrame = Mat(height, width, CV_8UC4,byteToVoid,0);
+            cvtColor(cameraFrame, cameraFrame, COLOR_RGBA2RGB);
         } else {
-            cameraFrame = Mat(height, width, CV_8UC3, raw);
-            cvtColor(cameraFrame, cameraFrame, COLOR_RGB2BGR);
+            cameraFrame = Mat(height, width, CV_8UC3,byteToVoid,0);
         }
         
         //run detection based on interval, track every other frame
@@ -221,5 +224,6 @@ extern "C" {
         return ConvertToChar(detectionList);
     }
 }
+
 
 

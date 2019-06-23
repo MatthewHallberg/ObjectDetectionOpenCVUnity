@@ -4,19 +4,19 @@ using System.Threading;
 
 public class OpenCV : MonoBehaviour {
 
-    public int DetectionInterval = 15;
+    int DetectionInterval = 15;
 
-    public CameraFeedBehavior cameraFeedBehavior;
     public DetectionBoxes detectionBoxes;
+    public NativeLibAdapter nativeLibAdapter;
 
     [Header("ML Assets")]
     public TextAsset labelFile;
     public string modelName = "yolov3-tiny";
 
-    ImageData camImage;
-    Thread detection;
     string detectionData = "";
-    bool runThread = true;
+    int currWidth;
+    int currHeight;
+    Thread detect;
 
     void Start() {
         string pathToConfig = System.IO.Path.Combine(Application.streamingAssetsPath, modelName + ".cfg");
@@ -29,42 +29,52 @@ public class OpenCV : MonoBehaviour {
         Debug.Log(fullPathConfig);
 
         //init plugin
-        NativeLibAdapter.InitPlugin(labelFile.ToString(), fullPathConfig, fullPathWeights);
+        nativeLibAdapter.InitPlugin(labelFile.ToString(), fullPathConfig, fullPathWeights);
         StartCoroutine(DetectRoutine());
-
-        //start other thread
-        detection = new Thread(DetectionThread);
-        detection.Start();
     }
 
-    void OnApplicationQuit() {
-        runThread = false;
-        Debug.Log("stopping thread...");
-    }
-
-    void DetectionThread() {
-        Thread.Sleep(5000);
-        while (runThread) {
-            camImage = cameraFeedBehavior.GetCamImage();
-            if (camImage.width > 100) {
-                DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
-                detectionData = NativeLibAdapter.DetectObjects(
-                    camImage.data,
-                    camImage.width,
-                    camImage.width,
-                    cameraFeedBehavior.HasAlphaChannel(),
-                    DetectionInterval
-                );
-            }
-            cameraFeedBehavior.DoneProcessing();
-            Thread.Sleep(20);
+    public void SubmitFrame(ImageData imageData) {
+        if (completed) {
+            completed = false;
+            StartCoroutine(SubmitFrameRoutine(imageData));
         }
+    }
+
+    IEnumerator SubmitFrameRoutine(ImageData imageData) {
+        //create thread
+        detect = new Thread(DetectionJob) {
+            IsBackground = false
+        };
+        detect.Start(imageData);
+        yield return null;
+    }
+
+    bool completed = true;
+    void DetectionJob(object data) {
+        ImageData imageData = (ImageData)data;
+        if (imageData.width > 100) {
+            //set values to be read elsewhere
+            currWidth = imageData.width;
+            currHeight = imageData.height;
+            //set this here so we can change at runtime if needed
+            DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
+            //submit frame to opencv
+            detectionData = nativeLibAdapter.DetectObjects(
+                imageData.data,
+                imageData.width,
+                imageData.width,
+                imageData.hasAlphaChannel,
+                DetectionInterval
+            );
+        }
+        Thread.Sleep(10);
+        completed = true;
     }
 
     IEnumerator DetectRoutine() {
         yield return new WaitForEndOfFrame();
         while (true) {
-            detectionBoxes.DrawDetections(detectionData, camImage.width, camImage.height);
+            detectionBoxes.DrawDetections(detectionData, currWidth, currHeight);
             yield return new WaitForEndOfFrame();
         }
     }

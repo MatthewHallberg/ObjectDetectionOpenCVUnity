@@ -20,3 +20,11 @@ Update Mode: updateDependencies
 The following packages were added:
   com.unity.multiplayer-hlapi@1.0.2
   com.unity.xr.legacyinputhelpers@2.0.2
+
+=== Fri Jun 21 03:47:18 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.multiplayer-hlapi@1.0.2

@@ -21,7 +21,6 @@ public class DetectionBoxes : MonoBehaviour {
 
                 string label = detectionsSplit[i];
 
-                //get box coordinates from opencv
                 float boxWidth = float.Parse(detectionsSplit[i + 3]);
                 float boxHeight = float.Parse(detectionsSplit[i + 4]);
                 float xMin = float.Parse(detectionsSplit[i + 1]);

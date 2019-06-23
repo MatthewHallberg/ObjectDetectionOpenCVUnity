@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d08ce72d992454798062dfdc9b847e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  opencv: {fileID: 425900975}
   camImageTex: {fileID: 19725809}
   ratioFitter: {fileID: 19725811}
   aRCameraManager: {fileID: 259115209}
@@ -514,6 +515,7 @@ GameObject:
   - component: {fileID: 425900976}
   - component: {fileID: 425900975}
   - component: {fileID: 425900974}
+  - component: {fileID: 425900977}
   m_Layer: 0
   m_Name: OpenCVDetector
   m_TagString: Untagged
@@ -612,9 +614,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 549b002de129e4165a22324b085e6507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionInterval: 15
-  cameraFeedBehavior: {fileID: 24932547}
   detectionBoxes: {fileID: 425900974}
+  nativeLibAdapter: {fileID: 425900977}
   labelFile: {fileID: 4900000, guid: 30f224ab313d942ce907648b10df4f50, type: 3}
   modelName: yolov3-tiny
 --- !u!4 &425900976
@@ -631,6 +632,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &425900977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425900973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee5c7a365e28b41ae9bf2cc280c82da1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
