@@ -30,22 +30,21 @@ public class NativeLibAdapter : MonoBehaviour {
 
     public string DetectObjects(byte[] bytes, int width, int height, bool isRGBA, int detectionInterval) {
         MarshalTexture(bytes);
-        var result = ProcessImage(imgPtr, width, height, isRGBA, detectionInterval);
-        return Marshal.PtrToStringAnsi(result);
+        IntPtr pStr = ProcessImage(imgPtr, width, height, isRGBA, detectionInterval);
+        return Marshal.PtrToStringAnsi(pStr);
     }
 
     private void OnApplicationQuit() {
         Marshal.FreeHGlobal(imgPtr);
+        Debug.Log("Freeing Buffer.");
     }
 
     void MarshalTexture(byte[] bytes) {
         int size = Marshal.SizeOf(bytes[0]) * bytes.Length;
         if (_marshalledSize < 1) {
-            Debug.Log("Free old marshalled buffer");
-            Marshal.FreeHGlobal(imgPtr);
             imgPtr = Marshal.AllocHGlobal(size);
             _marshalledSize = size;
-            Debug.Log("Created new marshalled buffer");
+            Debug.Log("Allocating new buffer...");
         }
 
         Marshal.Copy(bytes, 0, imgPtr, bytes.Length);

@@ -35,7 +35,7 @@ public class CameraFeedBehavior : MonoBehaviour {
     }
 
     void InitWebcam() {
-        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 800, 600, 30);
+        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 2000, 2000, 30);
         camImageTex.texture = webCamTex;
         webCamTex.Play();
     }
