@@ -73,12 +73,8 @@ public class DetectionBoxes : MonoBehaviour {
     }
 
     void OnGUI() {
-        try {
-            foreach (Detection item in currDetections) {
-                GUI.Box(item.rect, item.label, style);
-            }
-        } catch (InvalidOperationException e) {
-            Debug.Log("Collection modified during Execution " + e);
+        foreach (Detection item in currDetections) {
+            GUI.Box(item.rect, item.label, style);
         }
     }
 }

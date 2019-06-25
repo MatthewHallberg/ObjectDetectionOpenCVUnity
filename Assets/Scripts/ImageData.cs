@@ -1,4 +1,5 @@
-﻿public struct ImageData {
+﻿
+public class ImageData {
     public byte[] data;
     public int width;
     public int height;

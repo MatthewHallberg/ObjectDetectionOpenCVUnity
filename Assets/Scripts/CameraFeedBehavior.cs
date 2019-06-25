@@ -30,8 +30,9 @@ public class CameraFeedBehavior : MonoBehaviour {
     }
 
 #if UNITY_EDITOR
+
     void Update() {
-        UpdateWebCam();
+       UpdateWebCam();
     }
 
     void InitWebcam() {
@@ -40,6 +41,7 @@ public class CameraFeedBehavior : MonoBehaviour {
         webCamTex.Play();
     }
 
+    int count;
     void UpdateWebCam() {
         if (webCamTex.width > 100) {
             if (tempTex == null) {
@@ -48,16 +50,21 @@ public class CameraFeedBehavior : MonoBehaviour {
                 float aspectRatio = (float)webCamTex.width / (float)webCamTex.height;
                 ratioFitter.aspectRatio = aspectRatio;
                 tempTex = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false);
+                return;
             }
             
             //get webcamtexture out of B8G8R8A8_UNorm format
             tempTex.SetPixels32(webCamTex.GetPixels32());
-            //load data for other thread
-            opencv.SubmitFrame(new ImageData {
-                data = tempTex.GetRawTextureData(),
-                width = tempTex.width,
-                height = tempTex.height
-            });
+            tempTex.Apply();
+            if (count % 2 == 0) {
+                //load data for other thread
+                opencv.SubmitFrame(new ImageData {
+                    data = tempTex.GetRawTextureData(),
+                    width = tempTex.width,
+                    height = tempTex.height
+                });
+            }
+            count++;
         }
     }
 #else

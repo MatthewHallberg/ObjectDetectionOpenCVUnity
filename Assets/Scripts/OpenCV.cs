@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Threading;
+using System;
 
 public class OpenCV : MonoBehaviour {
 
@@ -34,41 +35,26 @@ public class OpenCV : MonoBehaviour {
     }
 
     public void SubmitFrame(ImageData imageData) {
-        if (completed) {
-            completed = false;
-            StartCoroutine(SubmitFrameRoutine(imageData));
-        }
+        GC.KeepAlive(imageData);
+        StartCoroutine(SubmitFrameRoutine(imageData));
     }
 
     IEnumerator SubmitFrameRoutine(ImageData imageData) {
-        //create thread
-        detect = new Thread(DetectionJob) {
-            IsBackground = false
-        };
-        detect.Start(imageData);
+        GC.KeepAlive(imageData);
+        //set values to be read elsewhere
+        currWidth = imageData.width;
+        currHeight = imageData.height;
+        //set this here so we can change at runtime if needed
+        DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
+        //submit frame to opencv
+        detectionData = nativeLibAdapter.DetectObjects(
+            imageData.data,
+            imageData.width,
+            imageData.width,
+            imageData.hasAlphaChannel,
+            DetectionInterval
+        );
         yield return null;
-    }
-
-    bool completed = true;
-    void DetectionJob(object data) {
-        ImageData imageData = (ImageData)data;
-        if (imageData.width > 100) {
-            //set values to be read elsewhere
-            currWidth = imageData.width;
-            currHeight = imageData.height;
-            //set this here so we can change at runtime if needed
-            DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
-            //submit frame to opencv
-            detectionData = nativeLibAdapter.DetectObjects(
-                imageData.data,
-                imageData.width,
-                imageData.width,
-                imageData.hasAlphaChannel,
-                DetectionInterval
-            );
-        }
-        Thread.Sleep(10);
-        completed = true;
     }
 
     IEnumerator DetectRoutine() {
