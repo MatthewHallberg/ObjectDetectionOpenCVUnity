@@ -52,11 +52,11 @@ public class CameraFeedBehavior : MonoBehaviour {
                 tempTex = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false);
                 return;
             }
-            
-            //get webcamtexture out of B8G8R8A8_UNorm format
-            tempTex.SetPixels32(webCamTex.GetPixels32());
-            tempTex.Apply();
+
             if (count % 2 == 0) {
+                //get webcamtexture out of B8G8R8A8_UNorm format
+                tempTex.SetPixels32(webCamTex.GetPixels32());
+                tempTex.Apply();
                 //load data for other thread
                 opencv.SubmitFrame(new ImageData {
                     data = tempTex.GetRawTextureData(),

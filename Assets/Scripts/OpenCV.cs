@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using System.Threading;
 using System;
 
 public class OpenCV : MonoBehaviour {
@@ -17,7 +16,6 @@ public class OpenCV : MonoBehaviour {
     string detectionData = "";
     int currWidth;
     int currHeight;
-    Thread detect;
 
     void Start() {
         string pathToConfig = System.IO.Path.Combine(Application.streamingAssetsPath, modelName + ".cfg");
@@ -35,26 +33,13 @@ public class OpenCV : MonoBehaviour {
     }
 
     public void SubmitFrame(ImageData imageData) {
-        GC.KeepAlive(imageData);
-        StartCoroutine(SubmitFrameRoutine(imageData));
-    }
-
-    IEnumerator SubmitFrameRoutine(ImageData imageData) {
-        GC.KeepAlive(imageData);
         //set values to be read elsewhere
         currWidth = imageData.width;
         currHeight = imageData.height;
         //set this here so we can change at runtime if needed
         DetectionInterval = Mathf.Clamp(DetectionInterval, 1, 1000);
-        //submit frame to opencv
-        detectionData = nativeLibAdapter.DetectObjects(
-            imageData.data,
-            imageData.width,
-            imageData.width,
-            imageData.hasAlphaChannel,
-            DetectionInterval
-        );
-        yield return null;
+        //submit frame to plugin
+        nativeLibAdapter.DetectObjects(imageData.data, imageData.width, imageData.height, false, 15);
     }
 
     IEnumerator DetectRoutine() {
