@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 using System.Text;
 using Unity.Collections;
@@ -7,21 +8,7 @@ using UnityEngine;
 
 public class NativeLibAdapter : MonoBehaviour {
 
-    public struct OpencvJob : IJob {
-        public NativeArray<byte> image;
-        public int width;
-        public int height;
-        public NativeArray<float> outputData;
-
-        public void Execute() {
-            byte[] imageBytes = image.ToArray();
-            IntPtr pStr = ProcessImage(imageBytes, width, height, false, 15);
-            Debug.Log(Marshal.PtrToStringAnsi(pStr));
-            //byte[] output = Encoding.ASCII.GetBytes(Marshal.PtrToStringAnsi(pStr));
-
-            outputData[0] = 10f;
-        }
-    }
+    public OpenCV openCV;
 
 #if UNITY_EDITOR
     [DllImport("macPlugin")]
@@ -45,26 +32,43 @@ public class NativeLibAdapter : MonoBehaviour {
         Debug.Log(classes + " classes loaded from plugin");
     }
 
-    public string DetectObjects(byte[] bytes, int width, int height, bool isRGBA, int detectionInterval) {
+    public void DetectObjects(byte[] bytes, int width, int height) {
+        StartCoroutine(DetectRoutine(bytes, width, height));
+    }
 
-        NativeArray<byte> ImageArrary = new NativeArray<byte>(bytes, Allocator.TempJob);
-        NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
-
+    IEnumerator DetectRoutine(byte[] bytes, int width, int height) {
         OpencvJob job = new OpencvJob {
-            image = ImageArrary,
+            image = new NativeArray<byte>(bytes, Allocator.TempJob),
             width = width,
-            height = height,
-            outputData = result
+            height = height
         };
 
         JobHandle handle = job.Schedule();
 
-        // Wait for the job to complete
-        handle.Complete();
-        float output = result[0];
+        while (handle.IsCompleted) {
+            yield return new WaitForEndOfFrame();
+        }
 
-        result.Dispose();
-        ImageArrary.Dispose();
-        return "";
+        //get rid of old image
+        handle.Complete();
+        job.image.Dispose();
+
+        //get result
+        string detections = Encoding.UTF8.GetString(detectionBytes);
+        openCV.OnDetectionResult(detections);
+    }
+
+    static byte[] detectionBytes;
+
+    public struct OpencvJob : IJob {
+        public NativeArray<byte> image;
+        public int width;
+        public int height;
+
+        public void Execute() {
+            byte[] imageBytes = image.ToArray();
+            IntPtr pStr = ProcessImage(imageBytes, width, height, false, 15);
+            detectionBytes = Encoding.UTF8.GetBytes(Marshal.PtrToStringAnsi(pStr));
+        }
     }
 }

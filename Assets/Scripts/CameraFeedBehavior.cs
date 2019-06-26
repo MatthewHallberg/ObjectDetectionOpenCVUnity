@@ -21,7 +21,7 @@ public class CameraFeedBehavior : MonoBehaviour {
     Texture2D tempTex;
 
     void Start() {
-        Application.targetFrameRate = 30;
+        Application.targetFrameRate = 60;
 #if UNITY_EDITOR
         InitWebcam();
 #else
@@ -32,16 +32,15 @@ public class CameraFeedBehavior : MonoBehaviour {
 #if UNITY_EDITOR
 
     void Update() {
-       UpdateWebCam();
+        UpdateWebCam();
     }
 
     void InitWebcam() {
-        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 2000, 2000, 30);
+        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 800, 600, 60);
         camImageTex.texture = webCamTex;
         webCamTex.Play();
     }
 
-    int count;
     void UpdateWebCam() {
         if (webCamTex.width > 100) {
             if (tempTex == null) {
@@ -52,19 +51,15 @@ public class CameraFeedBehavior : MonoBehaviour {
                 tempTex = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false);
                 return;
             }
-
-            if (count % 2 == 0) {
-                //get webcamtexture out of B8G8R8A8_UNorm format
-                tempTex.SetPixels32(webCamTex.GetPixels32());
-                tempTex.Apply();
-                //load data for other thread
-                opencv.SubmitFrame(new ImageData {
-                    data = tempTex.GetRawTextureData(),
-                    width = tempTex.width,
-                    height = tempTex.height
-                });
-            }
-            count++;
+            //get webcamtexture out of B8G8R8A8_UNorm format
+            tempTex.SetPixels32(webCamTex.GetPixels32());
+            tempTex.Apply();
+            //load data for other thread
+            opencv.SubmitFrame(new ImageData {
+                data = tempTex.GetRawTextureData(),
+                width = tempTex.width,
+                height = tempTex.height
+            });
         }
     }
 #else
