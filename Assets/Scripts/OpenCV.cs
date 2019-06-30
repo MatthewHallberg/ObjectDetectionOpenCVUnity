@@ -2,7 +2,6 @@
 
 public class OpenCV : MonoBehaviour {
 
-    public DetectionBoxes detectionBoxes;
     public NativeLibAdapter nativeLibAdapter;
 
     [Header("ML Assets")]
@@ -19,22 +18,15 @@ public class OpenCV : MonoBehaviour {
         string fullPathWeights = System.IO.Path.GetFullPath(pathToWeights);
 
         //TODO: MIGHT NEED CHANGED FOR ANDROID??
-        Debug.Log(fullPathWeights);
-        Debug.Log(fullPathConfig);
+        //Debug.Log(fullPathWeights);
+        //Debug.Log(fullPathConfig);
 
         //init plugin
         nativeLibAdapter.InitPlugin(labelFile.ToString(), fullPathConfig, fullPathWeights);
     }
 
-    public void SubmitFrame(ImageData imageData) {
-        //set values to be read elsewhere
-        currWidth = imageData.width;
-        currHeight = imageData.height;
+    public void SubmitFrame(Texture2D texture) {
         //submit frame to plugin
-        nativeLibAdapter.DetectObjects(imageData.data, imageData.width, imageData.height);
-    }
-
-    public void OnDetectionResult(string result){
-        detectionBoxes.DrawDetections(result, currWidth, currHeight);
+       //nativeLibAdapter.PassCamTexToPlugin(texture);
     }
 }

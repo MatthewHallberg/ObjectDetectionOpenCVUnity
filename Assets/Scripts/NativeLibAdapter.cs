@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using System.Text;
-using Unity.Collections;
-using Unity.Jobs;
 using UnityEngine;
 
 public class NativeLibAdapter : MonoBehaviour {
@@ -12,14 +9,21 @@ public class NativeLibAdapter : MonoBehaviour {
 
 #if UNITY_EDITOR
     [DllImport("macPlugin")]
-    private static extern int Init(string labels, string pathToConfig, string pathToWeights);
+    private static extern int InitOpenCV(string labels, string pathToConfig, string pathToWeights);
     [DllImport("macPlugin")]
-    private static extern IntPtr ProcessImage(byte[] bytes, int width, int height, bool isRGBA, int detectionInterval);
+    private static extern IntPtr ProcessImageOpenCV(byte[] bytes, int width, int height, int detectionInterval);
+    [DllImport("macPlugin")]
+    private static extern void SetViewTextureFromUnity(IntPtr texture, int w, int h);
+    [DllImport("macPlugin")]
+    private static extern IntPtr GetRenderEventFunc();
 #elif PLATFORM_IOS
+    private static extern int InitOpenCV(string labels, string pathToConfig, string pathToWeights);
     [DllImport("__Internal")]
-    private static extern int Init(string labels, string pathToConfig, string pathToWeights);
+    private static extern IntPtr ProcessImageOpenCV(byte[] bytes, int width, int height, int detectionInterval);
     [DllImport("__Internal")]
-    private static extern IntPtr ProcessImage(IntPtr buffer, int width, int height, bool isRGBA, int detectionInterval);
+    private static extern void SetViewTextureFromUnity(IntPtr texture, int w, int h);
+    [DllImport("__Internal")]
+    private static extern IntPtr GetRenderEventFunc();
 #else
     [DllImport("androidPlugin")]
     private static extern int Init(string labels, string pathToConfig, string pathToWeights);
@@ -28,47 +32,28 @@ public class NativeLibAdapter : MonoBehaviour {
 #endif
 
     public void InitPlugin(string labels, string pathToConfig, string pathToWeights) {
-        int classes = Init(labels, pathToConfig, pathToWeights);
-        Debug.Log(classes + " classes loaded from plugin");
+        int output = InitOpenCV(labels, pathToConfig, pathToWeights);
+        Debug.Log(output + " Classes Loaded!");
     }
 
-    public void DetectObjects(byte[] bytes, int width, int height) {
-        StartCoroutine(DetectRoutine(bytes, width, height));
+    public void PassViewTextureToPlugin(Texture2D tex) {
+        // Pass texture pointer to the plugin
+        SetViewTextureFromUnity(tex.GetNativeTexturePtr(), tex.width, tex.height);
     }
 
-    IEnumerator DetectRoutine(byte[] bytes, int width, int height) {
-        OpencvJob job = new OpencvJob {
-            image = new NativeArray<byte>(bytes, Allocator.TempJob),
-            width = width,
-            height = height
-        };
+    public void StartOnRenderEvent() {
+        StartCoroutine(CallPluginAtEndOfFrames());
+    }
 
-        JobHandle handle = job.Schedule();
-
-        while (handle.IsCompleted) {
+    IEnumerator CallPluginAtEndOfFrames() {
+        while (true) {
+            // Wait until all frame rendering is done
             yield return new WaitForEndOfFrame();
+            GL.IssuePluginEvent(GetRenderEventFunc(), 1);
         }
-
-        //get rid of old image
-        handle.Complete();
-        job.image.Dispose();
-
-        //get result
-        string detections = Encoding.UTF8.GetString(detectionBytes);
-        openCV.OnDetectionResult(detections);
     }
 
-    static byte[] detectionBytes;
-
-    public struct OpencvJob : IJob {
-        public NativeArray<byte> image;
-        public int width;
-        public int height;
-
-        public void Execute() {
-            byte[] imageBytes = image.ToArray();
-            IntPtr pStr = ProcessImage(imageBytes, width, height, false, 15);
-            detectionBytes = Encoding.UTF8.GetBytes(Marshal.PtrToStringAnsi(pStr));
-        }
+    public void ProcessImageCV(Texture2D tex) {
+        ProcessImageOpenCV(tex.GetRawTextureData(), tex.width, tex.height, 15);
     }
 }

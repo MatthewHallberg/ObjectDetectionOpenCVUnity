@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 #if !UNITY_EDITOR
@@ -12,20 +13,21 @@ public class CameraFeedBehavior : MonoBehaviour {
 
     readonly TextureFormat textureFormat = TextureFormat.RGB24;
 
+    public NativeLibAdapter nativeLibAdapter;
+
+    public RawImage screenImageFromPlugin;
     public OpenCV opencv;
-    public RawImage camImageTex;
     public AspectRatioFitter ratioFitter;
     public ARCameraManager aRCameraManager;
 
     WebCamTexture webCamTex;
-    Texture2D tempTex;
+    Texture2D writableTexture;
+    Texture2D textureToSend;
 
     void Start() {
         Application.targetFrameRate = 60;
 #if UNITY_EDITOR
         InitWebcam();
-#else
-        InitXRCam();
 #endif
     }
 
@@ -37,29 +39,38 @@ public class CameraFeedBehavior : MonoBehaviour {
 
     void InitWebcam() {
         webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 800, 600, 60);
-        camImageTex.texture = webCamTex;
         webCamTex.Play();
     }
 
     void UpdateWebCam() {
         if (webCamTex.width > 100) {
-            if (tempTex == null) {
+            if (writableTexture == null) {
                 Debug.Log(webCamTex.width + " : " + webCamTex.height);
                 //set UI cam image aspect ratio
                 float aspectRatio = (float)webCamTex.width / (float)webCamTex.height;
                 ratioFitter.aspectRatio = aspectRatio;
-                tempTex = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false);
+
+                //set up cam textures
+                writableTexture = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false) {
+                    filterMode = FilterMode.Point
+                };
+
+                textureToSend = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false) {
+                    filterMode = FilterMode.Point
+                };
+
+                nativeLibAdapter.PassViewTextureToPlugin(writableTexture);
+                screenImageFromPlugin.texture = writableTexture;
+
+                //start rendering event
+                nativeLibAdapter.StartOnRenderEvent();
+
                 return;
             }
-            //get webcamtexture out of B8G8R8A8_UNorm format
-            tempTex.SetPixels32(webCamTex.GetPixels32());
-            tempTex.Apply();
-            //load data for other thread
-            opencv.SubmitFrame(new ImageData {
-                data = tempTex.GetRawTextureData(),
-                width = tempTex.width,
-                height = tempTex.height
-            });
+
+            textureToSend.SetPixels32(webCamTex.GetPixels32());
+            textureToSend.Apply();
+            nativeLibAdapter.ProcessImageCV(textureToSend);
         }
     }
 #else
@@ -71,40 +82,47 @@ public class CameraFeedBehavior : MonoBehaviour {
         aRCameraManager.frameReceived -= OnCameraFrameReceived;
     }
 
-    void InitXRCam() {
-        camImageTex.gameObject.SetActive(false);
-    }
-
     unsafe void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs) {
 
         if (!aRCameraManager.TryGetLatestImage(out XRCameraImage image)) {
             return;
         }
 
-        if (tempTex == null || tempTex.width != image.width || tempTex.height != image.height) {
-            tempTex = new Texture2D(image.width, image.height, textureFormat, false);
+        if (writableTexture == null || writableTexture.width != image.width || writableTexture.height != image.height) {
+            //init textures here
+
+            writableTexture = new Texture2D(image.width, image.height, textureFormat, false) {
+                filterMode = FilterMode.Point
+            };
+
+            textureToSend = new Texture2D(webCamTex.width, webCamTex.height, textureFormat, false) {
+                filterMode = FilterMode.Point
+            };
+
+            nativeLibAdapter.PassViewTextureToPlugin(writableTexture);
+            screenImageFromPlugin.texture = writableTexture;
+
+            //set UI cam image aspect ratio
+            float aspectRatio = (float)writableTexture.width / (float)writableTexture.height;
+            ratioFitter.aspectRatio = aspectRatio;
         }
 
         var conversionParams = new XRCameraImageConversionParams(image, textureFormat, CameraImageTransformation.MirrorX);
 
         conversionParams.outputDimensions = new Vector2Int(image.width/2, image.height / 2);
 
-        var rawTextureData = tempTex.GetRawTextureData<byte>();
+        var rawTextureData = textureToSend.GetRawTextureData<byte>();
         try {
             image.Convert(conversionParams, new IntPtr(rawTextureData.GetUnsafePtr()), rawTextureData.Length);
         } finally {
             image.Dispose();
         }
 
-        tempTex.Apply();
+        textureToSend.Apply();
 
         //load data for other thread
-        Debug.Log(tempTex.width + " " + tempTex.height);
-        opencv.SubmitFrame(new ImageData {
-            data = tempTex.GetRawTextureData(),
-            width = tempTex.width,
-            height = tempTex.height
-        });
+        Debug.Log(textureToSend.width + " " + textureToSend.height);
+        nativeLibAdapter.ProcessImageCV(textureToSend);
     }
 #endif
 }
