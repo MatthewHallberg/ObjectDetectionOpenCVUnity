@@ -3,10 +3,10 @@
 
 #include <stdio.h>
 
-extern "C" {
-    __declspec(dllexport) int Init(char* labels, char* pathToConfig, char* pathToWeights);
-    __declspec(dllexport) char* ProcessImage(unsigned char* bytes, int width, int height, bool isRGBA, int detectionInterval);
-}
+__declspec(dllexport) int InitOpenCV(char* labels, char* pathToConfig, char* pathToWeights);
+__declspec(dllexport) char* ProcessImageOpenCV(unsigned char* bytes, int width, int height, int detectionInterval);
+
+unsigned char* GetCurrImage();
 
 #endif /* OpenCVPlugin_hpp */
 
