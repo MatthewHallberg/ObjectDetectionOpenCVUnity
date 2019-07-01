@@ -3,11 +3,14 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/tracking.hpp>
 #include <opencv2/dnn.hpp>
+#include <OpenGL/gl.h>
+#include <OpenGL/gl.h>
+
 
 using namespace std;
 using namespace cv;
 using namespace dnn;
-    
+
 // Initialize the parameters
 float confThreshold = 0.2; // Confidence threshold
 float nmsThreshold = .01;  // Non-maximum suppression threshold
@@ -191,7 +194,7 @@ unsigned char* GetCurrImage(){
 }
 
 extern "C" {
-
+    
     int InitOpenCV(char* labels, char* pathToConfig, char* pathToWeights){
         
         if (classes.size() < 1){
@@ -211,11 +214,13 @@ extern "C" {
         
         return (int)classes.size();
     }
-
+    
     char* ProcessImageOpenCV(unsigned char* bytes, int width, int height, int detectionInterval){
         
-        Mat cameraFrame = Mat(height, width, CV_8UC3, static_cast<void*>(bytes));
-
+        Mat cameraFrame = Mat(height, width, CV_8UC4, static_cast<void*>(bytes));
+        
+        cvtColor(cameraFrame,cameraFrame,CV_RGBA2RGB);
+        
         if (!cameraFrame.empty()){
             
             //run detection based on interval, track every other frame
@@ -237,10 +242,13 @@ extern "C" {
         
         framecount++;
         
+        cvtColor(cameraFrame,cameraFrame,CV_RGB2RGBA);
+        
         cameraFrame.copyTo(currMat);
         cameraFrame.release();
         
         return ConvertToChar(detectionList);
     }
 }
+
 
