@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class NativeLibAdapter : MonoBehaviour {
 
-    public OpenCV openCV;
-
 #if UNITY_EDITOR
     [DllImport("macPlugin")]
     private static extern int InitOpenCV(string labels, string pathToConfig, string pathToWeights);
@@ -17,6 +15,7 @@ public class NativeLibAdapter : MonoBehaviour {
     [DllImport("macPlugin")]
     private static extern IntPtr GetRenderEventFunc();
 #elif PLATFORM_IOS
+    [DllImport("__Internal")]
     private static extern int InitOpenCV(string labels, string pathToConfig, string pathToWeights);
     [DllImport("__Internal")]
     private static extern IntPtr ProcessImageOpenCV(byte[] bytes, int width, int height, int detectionInterval);
@@ -46,6 +45,7 @@ public class NativeLibAdapter : MonoBehaviour {
     }
 
     IEnumerator CallPluginAtEndOfFrames() {
+        yield return new WaitForSeconds(.5f);
         while (true) {
             // Wait until all frame rendering is done
             yield return new WaitForEndOfFrame();
@@ -54,6 +54,10 @@ public class NativeLibAdapter : MonoBehaviour {
     }
 
     public void ProcessImageCV(Texture2D tex) {
-        ProcessImageOpenCV(tex.GetRawTextureData(), tex.width, tex.height, 15);
+        IntPtr output = ProcessImageOpenCV(tex.GetRawTextureData(), tex.width, tex.height, 15);
+        string data = Marshal.PtrToStringAnsi(output);
+        if (data.Length > 0) {
+            Debug.Log(data);
+        }
     }
 }
