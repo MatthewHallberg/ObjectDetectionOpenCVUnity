@@ -121,7 +121,7 @@ static void ModifyTexturePixels() {
     
     unsigned char* textureDataPtr = GetCurrImage();
     
-    s_CurrentAPI->EndModifyTexture(textureHandle, width, height, width * 3, textureDataPtr);
+    s_CurrentAPI->EndModifyTexture(textureHandle, width, height, width * 4, textureDataPtr);
 }
 
 static void UNITY_INTERFACE_API OnRenderEvent(int eventID)

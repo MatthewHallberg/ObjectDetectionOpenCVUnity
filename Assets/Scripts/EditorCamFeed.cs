@@ -10,7 +10,7 @@ public class EditorCamFeed : MonoBehaviour {
 
     public void Init() {
         openCV = GetComponent<OpenCV>();
-        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 800, 600, 30);
+        webCamTex = new WebCamTexture(WebCamTexture.devices[0].name, 640, 480, 30);
         webCamTex.Play();
     }
 
@@ -20,7 +20,7 @@ public class EditorCamFeed : MonoBehaviour {
             if (!texturesCreated) {
                 texturesCreated = true;
                 openCV.CreateWritableTexture(webCamTex.width, webCamTex.height);
-                textureToSend = new Texture2D(webCamTex.width, webCamTex.height, openCV.GetTextureFormat(), false);
+                textureToSend = new Texture2D(webCamTex.width, webCamTex.height, openCV.sendFormat, false);
                 return;
             }
             textureToSend.SetPixels32(webCamTex.GetPixels32());

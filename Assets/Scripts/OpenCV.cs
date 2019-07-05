@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class OpenCV : MonoBehaviour {
 
-    readonly TextureFormat textureFormat = TextureFormat.RGBA32;
+    public TextureFormat sendFormat = TextureFormat.RGB24;
+    public TextureFormat viewFormat = TextureFormat.RGBA32;
 
     [SerializeField]
     public NativeLibAdapter nativeLibAdapter;
@@ -52,7 +53,7 @@ public class OpenCV : MonoBehaviour {
         ratioFitter.aspectRatio = aspectRatio;
 
         //set up cam textures
-        writableTexture = new Texture2D(width, height, textureFormat, false);
+        writableTexture = new Texture2D(width, height, viewFormat, false);
         
         nativeLibAdapter.PassViewTextureToPlugin(writableTexture);
         screenImageFromPlugin.texture = writableTexture;
@@ -61,15 +62,7 @@ public class OpenCV : MonoBehaviour {
         nativeLibAdapter.StartOnRenderEvent();
     }
 
-    public TextureFormat GetTextureFormat() {
-        return textureFormat;
-    }
-
-    int count;
     public void ProcessImage(Texture2D texture) {
-        count++;
-        if (count % 2 == 0) {
-            nativeLibAdapter.ProcessImageCV(texture);
-        }
+        nativeLibAdapter.ProcessImageCV(texture);
     }
 }

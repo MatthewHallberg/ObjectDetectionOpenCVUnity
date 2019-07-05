@@ -1,8 +1,9 @@
 ﻿using System;
-using UnityEngine;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine.XR.ARSubsystems;
+using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 [RequireComponent(typeof(OpenCV))]
 public class ARCamFeed : MonoBehaviour {
@@ -31,30 +32,53 @@ public class ARCamFeed : MonoBehaviour {
             return;
         }
 
-        if (textureToSend == null || textureToSend.width != image.width || textureToSend.height != image.height) {
-            textureToSend = new Texture2D(image.width, image.height, openCV.GetTextureFormat(), false);
+        XRCameraImageConversionParams conversionParams = new XRCameraImageConversionParams {
+            // Get the entire image
+            inputRect = new RectInt(0, 0, image.width, image.height),
+
+            // Downsample
+            outputDimensions = new Vector2Int(image.width / 3, image.height / 3),
+
+            // Choose RGB format
+            outputFormat = openCV.sendFormat,
+
+            // Flip across the vertical axis (mirror image)
+            transformation = CameraImageTransformation.MirrorX
+        };
+
+        // See how many bytes we need to store the final image.
+        int size = image.GetConvertedDataSize(conversionParams);
+
+        // Allocate a buffer to store the image
+        var buffer = new NativeArray<byte>(size, Allocator.Temp);
+
+        // Extract the image data
+        image.Convert(conversionParams, new IntPtr(buffer.GetUnsafePtr()), buffer.Length);
+
+        image.Dispose();
+
+        if (textureToSend == null) {
+            textureToSend = new Texture2D(
+                conversionParams.outputDimensions.x,
+                conversionParams.outputDimensions.y,
+                conversionParams.outputFormat,
+            false);
         }
 
-        var conversionParams = new XRCameraImageConversionParams(
-            image, openCV.GetTextureFormat(), CameraImageTransformation.MirrorY);
-
-        var rawTextureData = textureToSend.GetRawTextureData<byte>();
-
-        try {
-            image.Convert(conversionParams, new IntPtr(rawTextureData.GetUnsafePtr()), rawTextureData.Length);
-        } finally {
-            image.Dispose();
-        }
+        textureToSend.LoadRawTextureData(buffer);
+        textureToSend.Apply();
 
         if (!texturesCreated) {
             texturesCreated = true;
             //init textures here
-            openCV.CreateWritableTexture(image.width, image.height);
+            openCV.CreateWritableTexture(textureToSend.width, textureToSend.height);
             return;
         }
 
-        textureToSend.Apply();
         //process the image
         openCV.ProcessImage(textureToSend);
+
+        // Done with our temporary data
+        buffer.Dispose();
     }
 }

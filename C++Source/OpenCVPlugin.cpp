@@ -3,19 +3,16 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/tracking.hpp>
 #include <opencv2/dnn.hpp>
-#include <OpenGL/gl.h>
-#include <OpenGL/gl.h>
-
 
 using namespace std;
 using namespace cv;
 using namespace dnn;
-
+    
 // Initialize the parameters
-float confThreshold = 0.2; // Confidence threshold
-float nmsThreshold = .01;  // Non-maximum suppression threshold
-int inpWidth = 416;        // was 416 Width of network's input image
-int inpHeight = 416;       // was  416 Height of network's input image
+float confThreshold = 0.4; // Confidence threshold
+float nmsThreshold = 0.1;  // Non-maximum suppression threshold
+int inpWidth = 320;        // was 416 Width of network's input image
+int inpHeight = 320;       // was  416 Height of network's input image
 int framecount = 0;
 
 vector<string> classes;
@@ -39,9 +36,9 @@ public:
         label = objectName;
         box = boundingBox;
         trackingBox = box;
-        //best tracker but performance goes to shit (worth testing on device?)
         //tracker = TrackerCSRT::create();
-        tracker = TrackerKCF::create();
+        //tracker = TrackerKCF::create();
+        tracker = TrackerMOSSE::create();
         tracker->init(frame, trackingBox);
     }
     
@@ -194,7 +191,7 @@ unsigned char* GetCurrImage(){
 }
 
 extern "C" {
-    
+
     int InitOpenCV(char* labels, char* pathToConfig, char* pathToWeights){
         
         if (classes.size() < 1){
@@ -203,7 +200,7 @@ extern "C" {
             // Load the network
             net = readNetFromDarknet(string(pathToConfig), string(pathToWeights));
             net.setPreferableBackend(DNN_BACKEND_OPENCV);
-            net.setPreferableTarget(DNN_TARGET_OPENCL);
+            net.setPreferableTarget(DNN_TARGET_CPU);
         } else {
             //loop through all current detections and clear
             for(int i = 0; i < detections.size(); i++){
@@ -214,12 +211,13 @@ extern "C" {
         
         return (int)classes.size();
     }
-    
+
     char* ProcessImageOpenCV(unsigned char* bytes, int width, int height, int detectionInterval){
         
-        Mat cameraFrame = Mat(height, width, CV_8UC4, static_cast<void*>(bytes));
-        
-        cvtColor(cameraFrame,cameraFrame,CV_RGBA2RGB);
+        //process incoming stream before we can use it
+        Mat cameraFrame = Mat(height, width, CV_8UC3, static_cast<void*>(bytes));
+        rotate(cameraFrame,cameraFrame,ROTATE_180);
+        flip(cameraFrame,cameraFrame,1);
         
         if (!cameraFrame.empty()){
             
@@ -234,21 +232,16 @@ extern "C" {
         //return detections in comma seperated string
         string detectionList = "";
         for(int i = 0; i < detections.size(); i++){
-            Rect2d box = detections[i].trackingBox;
             detectionList += detections[i].label + ",";
-            detectionList += to_string(box.x) + "," + to_string(box.y) + ",";
-            detectionList += to_string(box.width) + "," + to_string(box.height) + ",";
         }
         
         framecount++;
         
+        //convert to RGBA because its the only way I could get to work on Metal
         cvtColor(cameraFrame,cameraFrame,CV_RGB2RGBA);
-        
         cameraFrame.copyTo(currMat);
-        cameraFrame.release();
         
         return ConvertToChar(detectionList);
     }
 }
-
 

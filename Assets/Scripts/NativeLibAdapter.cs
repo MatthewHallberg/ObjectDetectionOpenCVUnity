@@ -54,10 +54,10 @@ public class NativeLibAdapter : MonoBehaviour {
     }
 
     public void ProcessImageCV(Texture2D tex) {
-        IntPtr output = ProcessImageOpenCV(tex.GetRawTextureData(), tex.width, tex.height, 15);
+        IntPtr output = ProcessImageOpenCV(tex.GetRawTextureData(), tex.width, tex.height, 10);
         string data = Marshal.PtrToStringAnsi(output);
         if (data.Length > 0) {
-            Debug.Log(data);
+            //Debug.Log(data);
         }
     }
 }
