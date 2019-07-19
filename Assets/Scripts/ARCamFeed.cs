@@ -12,9 +12,6 @@ public class ARCamFeed : MonoBehaviour {
     public ARCameraManager arCameraManager;
 
     [SerializeField]
-    public ARCameraBackground arCameraBackground;
-
-    [SerializeField]
     public GameObject uiImage;
 
     OpenCV openCV;
