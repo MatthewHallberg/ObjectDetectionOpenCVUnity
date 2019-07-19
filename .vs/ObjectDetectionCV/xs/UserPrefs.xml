@@ -1,9 +1,9 @@
 ﻿<Properties StartupConfiguration="{577AB7D6-BFF3-6042-4CB5-8AE887BC42C1}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/NativeLibAdapter.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Visualizer.cs">
     <Files>
-      <File FileName="Assets/Scripts/CameraFeedBehavior.cs" Line="54" Column="58" />
-      <File FileName="Assets/Scripts/OpenCV.cs" Line="28" Column="36" />
-      <File FileName="Assets/Scripts/NativeLibAdapter.cs" Line="39" Column="38" />
+      <File FileName="Assets/Scripts/Visualizer.cs" Line="74" Column="17" />
+      <File FileName="Assets/Scripts/ARCamFeed.cs" Line="40" Column="59" />
+      <File FileName="Assets/Scripts/OpenCV.cs" Line="42" Column="29" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
