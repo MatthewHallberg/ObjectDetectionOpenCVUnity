@@ -87,9 +87,10 @@ public:
         }
     }
     
-    bool UpdateTracker(Mat& frame){
+    void UpdateTracker(Mat& frame){
         if(previousKeyPoints.size() < 1){
             StartTracker(frame);
+            return;
         }
         
         if(previousKeyPoints.size() > 0){
@@ -114,10 +115,6 @@ public:
             Rect matchBounds = boundingRect(flowDectionPoints);
             box = matchBounds;
             swap(previousKeyPoints, flowDectionPoints);
-            
-            return true;
-        } else {
-            return false;
         }
     }
 };
