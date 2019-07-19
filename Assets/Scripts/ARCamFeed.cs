@@ -37,6 +37,10 @@ public class ARCamFeed : MonoBehaviour {
             return;
         }
 
+        //limit rotation to landscape left because im lazy
+        int rotation = 0;
+        CameraImageTransformation camTransform = CameraImageTransformation.None;
+
         XRCameraImageConversionParams conversionParams = new XRCameraImageConversionParams {
             // Get the entire image
             inputRect = new RectInt(0, 0, image.width, image.height),
@@ -47,8 +51,8 @@ public class ARCamFeed : MonoBehaviour {
             // Choose RGB format
             outputFormat = openCV.textureFormat,
 
-            // Flip across the vertical axis (mirror image)
-            transformation = CameraImageTransformation.MirrorX
+            // Choose transform type
+            transformation = camTransform
         };
 
         // See how many bytes we need to store the final image.
@@ -74,7 +78,7 @@ public class ARCamFeed : MonoBehaviour {
         textureToSend.Apply();
 
         //process the image
-        openCV.ProcessImage(textureToSend, 0);
+        openCV.ProcessImage(textureToSend, rotation);
 
         // Done with our temporary data
         buffer.Dispose();

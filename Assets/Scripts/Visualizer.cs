@@ -70,8 +70,11 @@ public class Visualizer : MonoBehaviour {
                     xMax = xMin + boxWidth;
                 }
 
+//this should not be here but im sick of this project
+#if UNITY_EDITOR
                 xMin = ScreenWidth - xMin;
                 xMax = ScreenWidth - xMax;
+#endif
 
                 //add to detection list to be drawn
                 Rect rect = Rect.MinMaxRect(xMin, yMin, xMax, yMax);

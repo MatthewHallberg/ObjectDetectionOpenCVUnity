@@ -43,12 +43,6 @@ void ExtractPointsFromFrame(Mat& frame){
                             );
 }
 
-void DrawDetection(string label, Rect rect){
-    rectangle(cameraFrame, rect, Scalar(0, 0, 255),5);
-    //Display the label at the top of the bounding box
-    putText(cameraFrame, label, Point(rect.x, rect.y), FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,255),3);
-}
-
 class Detection {
 public:
     string label;
@@ -58,14 +52,6 @@ public:
     Detection(string objectName, Rect boundingBox,Mat& frame){
         label = objectName;
         box = boundingBox;
-    }
-    
-    void Destroy(){
-        //PUT SOMETHING HERE!!! DONT FORGET TO DELEtE WHAT YOU CREATE
-    }
-    
-    void Draw(){
-        DrawDetection(label,box);
     }
     
     float clamp(float n, float lower, float upper) {
@@ -102,7 +88,7 @@ public:
     }
     
     bool UpdateTracker(Mat& frame){
-        if(previousKeyPoints.size() < 3){
+        if(previousKeyPoints.size() < 1){
             StartTracker(frame);
         }
         
@@ -127,7 +113,6 @@ public:
             //draw box from optical flow points
             Rect matchBounds = boundingRect(flowDectionPoints);
             box = matchBounds;
-            DrawDetection(label,box);
             swap(previousKeyPoints, flowDectionPoints);
             
             return true;
@@ -151,7 +136,6 @@ void drawPred(int classId, float conf, int left, int top, int right, int bottom,
     }
     //add to current list
     Detection det = Detection(label,rect,frame);
-    det.Draw();
     detections.push_back(det);
 }
 
@@ -210,10 +194,6 @@ void postprocess(Mat& frame, const vector<Mat>& outs){
     vector<int> indices;
     NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
     
-    //loop through all current detections and clear
-    for(int i = 0; i < detections.size(); i++){
-        detections[i].Destroy();
-    }
     detections.clear();
     
     for (size_t i = 0; i < indices.size(); ++i){
@@ -243,10 +223,7 @@ void TrackDetections(Mat& frame){
     //loop through all detections and track
     for(int i = 0; i < detections.size(); i++){
         //if tracking lost remove from list
-        if (!detections[i].UpdateTracker(frame)){
-            detections[i].Destroy();
-            detections.erase(detections.begin() + i);
-        }
+        detections[i].UpdateTracker(frame);
     }
 }
 
@@ -258,14 +235,14 @@ void CreateLabels(string labelFile){
     }
 }
 
+unsigned char* GetCurrImage(){
+    return cameraFrame.data;
+}
+
 char* ConvertToChar(string str){
     char *cstr = new char[str.length() + 1];
     strcpy(cstr, str.c_str());
     return cstr;
-}
-
-unsigned char* GetCurrImage(){
-    return cameraFrame.data;
 }
 
 extern "C" {
@@ -280,23 +257,29 @@ extern "C" {
             net.setPreferableBackend(DNN_BACKEND_OPENCV);
             net.setPreferableTarget(DNN_TARGET_CPU);
         } else {
-            //loop through all current detections and clear
-            for(int i = 0; i < detections.size(); i++){
-                detections[i].Destroy();
-            }
             detections.clear();
         }
         
         return (int)classes.size();
     }
     
-    char* ProcessImageOpenCV(unsigned char* bytes, int width, int height, int detectionInterval){
+    char* ProcessImageOpenCV(unsigned char* bytes, int width, int height, int detectionInterval, int rotation){
         
         //process incoming stream before we can use it
-        cameraFrame.release();
         cameraFrame = Mat(height, width, CV_8UC3, static_cast<void*>(bytes));
-        rotate(cameraFrame,cameraFrame,ROTATE_180);
-        flip(cameraFrame,cameraFrame,1);
+        
+        //rotate frame based on device rotation
+        switch(rotation) {
+            case 90 :
+                rotate(cameraFrame,cameraFrame,ROTATE_90_CLOCKWISE);
+                break;
+            case -90 :
+                rotate(cameraFrame,cameraFrame,ROTATE_90_COUNTERCLOCKWISE);
+                break;
+            case 180 :
+                rotate(cameraFrame,cameraFrame,ROTATE_180);
+                break;
+        }
         
         if (!cameraFrame.empty()){
             //run detection based on interval, track every other frame
@@ -317,13 +300,14 @@ extern "C" {
         //return detections in comma seperated string
         string detectionList = "";
         for(int i = 0; i < detections.size(); i++){
-            detectionList += detections[i].label + ",";
+            detectionList += detections[i].label + ","
+            + to_string(detections[i].box.x) + ","
+            + to_string(detections[i].box.y) + ","
+            + to_string(detections[i].box.width) + ","
+            + to_string(detections[i].box.height) + ",";
         }
         
         frameCount++;
-        
-        //convert to RGBA because its the only way I could get to work on Metal
-        cvtColor(cameraFrame,cameraFrame,CV_RGB2RGBA);
         
         return ConvertToChar(detectionList);
     }
