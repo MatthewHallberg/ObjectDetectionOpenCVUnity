@@ -62,11 +62,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\CameraFeedBehavior.cs" />
-    <Compile Include="Assets\Scripts\DetectionBoxes.cs" />
-    <Compile Include="Assets\Scripts\ImageData.cs" />
+    <Compile Include="Assets\Scripts\ARCamFeed.cs" />
+    <Compile Include="Assets\Scripts\EditorCamFeed.cs" />
     <Compile Include="Assets\Scripts\NativeLibAdapter.cs" />
     <Compile Include="Assets\Scripts\OpenCV.cs" />
+    <Compile Include="Assets\Scripts\Visualizer.cs" />
     <None Include="Assets\notes.txt" />
     <None Include="Assets\Resources\coco.txt" />
     <Reference Include="Unity.Timeline.Editor">

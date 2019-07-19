@@ -173,9 +173,6 @@
     <Reference Include="UnityEngine.UmbraModule">
       <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.UmbraModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UnityAnalyticsModule">
-      <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UnityConnectModule">
       <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.UnityConnectModule.dll</HintPath>
     </Reference>
@@ -239,6 +236,9 @@
     <Reference Include="UnityEditor.Graphs">
       <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/Unity.app/Contents/Managed/UnityEditor.Graphs.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.WebGL.Extensions">
+      <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.OSXStandalone.Extensions">
       <HintPath>/Applications/Unity/Hub/Editor/2019.1.2f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
@@ -253,15 +253,6 @@
     </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>/Users/matthewhallberg/ObjectDetectionCV/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>/Users/matthewhallberg/ObjectDetectionCV/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.Editor">
-      <HintPath>/Users/matthewhallberg/ObjectDetectionCV/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>/Users/matthewhallberg/ObjectDetectionCV/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>/Users/matthewhallberg/ObjectDetectionCV/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
@@ -666,22 +657,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\coco.txt" />
-    <None Include="Assets\Vuforia\Databases\Emulator\VuforiaEmulator.xml" />
-    <None Include="Assets\Vuforia\Editor\Scripts\VuforiaEditorScripts.asmdef" />
-    <None Include="Assets\Vuforia\Scripts\VuforiaScripts.asmdef" />
-    <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
-    <None Include="Assets\Vuforia\Shaders\CameraDiffuse.shader" />
-    <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
-    <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
-    <None Include="Assets\Vuforia\Shaders\DepthContour.shader" />
-    <None Include="Assets\Vuforia\Shaders\DepthMask.shader" />
-    <None Include="Assets\Vuforia\Shaders\OutlineOpaque.shader" />
-    <None Include="Assets\Vuforia\Shaders\Text3D.shader" />
-    <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
-    <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
-    <None Include="Packages\com.unity.analytics\DataPrivacy\Unity.Analytics.DataPrivacy.asmdef" />
-    <None Include="Packages\com.unity.analytics\Tests\Editor\Unity.Analytics.StandardEvents\Unity.Analytics.StandardEvents.EditorTests.asmdef" />
-    <None Include="Packages\com.unity.analytics\Tests\Runtime\DataPrivacy\Unity.Analytics.DataPrivacy.Tests.asmdef" />
+    <None Include="Assets\notes.txt" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryCommon.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryDark.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryLight.uss" />
@@ -692,35 +668,30 @@
     <None Include="Packages\com.unity.multiplayer-hlapi\Runtime\com.unity.multiplayer-hlapi.Runtime.asmdef" />
     <None Include="Packages\com.unity.multiplayer-hlapi\Tests\Editor\com.unity.multiplayer-hlapi.EditorTests.asmdef" />
     <None Include="Packages\com.unity.multiplayer-hlapi\Tests\Runtime\com.unity.multiplayer-hlapi.Tests.asmdef" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Dark.uss" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Light.uss" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\Alert.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageAddFromIdField.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageDependencies.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageDetails.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageGroup.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageItem.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageList.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageManagerToolbar.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageManagerWindow.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageSampleList.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageSearchToolbar.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageStatusBar.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageToolbar.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Unity.PackageManagerUI.Editor.asmdef" />
-    <None Include="Packages\com.unity.package-manager-ui\Tests\Editor\Unity.PackageManagerUI.EditorTests.asmdef" />
     <None Include="Packages\com.unity.purchasing\Tests\Editor\Unity.IAP.purchasing.EditorTests.asmdef" />
     <None Include="Packages\com.unity.purchasing\Tests\Runtime\Unity.IAP.purchasing.RunTimeTests.asmdef" />
-    <None Include="Packages\com.unity.textmeshpro\Editor Resources\Shaders\TMP_Properties.cginc" />
-    <None Include="Packages\com.unity.textmeshpro\Editor Resources\Shaders\TMP_SDF Internal SSD.shader" />
-    <None Include="Packages\com.unity.textmeshpro\Scripts\Editor\Unity.TextMeshPro.Editor.asmdef" />
-    <None Include="Packages\com.unity.textmeshpro\Scripts\Runtime\Unity.TextMeshPro.asmdef" />
-    <None Include="Packages\com.unity.textmeshpro\Tests\Editor\Unity.TextMeshPro.Editor.Tests.asmdef" />
-    <None Include="Packages\com.unity.textmeshpro\Tests\Runtime\Unity.TextMeshPro.Tests.asmdef" />
+    <None Include="Packages\com.unity.subsystemregistration\Runtime\Unity.Subsystem.Registration.asmdef" />
+    <None Include="Packages\com.unity.subsystemregistration\Tests\Runtime\Unity.Subsystem.Registration.Runtime.Tests.asmdef" />
     <None Include="Packages\com.unity.timeline\Editor\Unity.Timeline.Editor.asmdef" />
     <None Include="Packages\com.unity.timeline\Runtime\Unity.Timeline.asmdef" />
     <None Include="Packages\com.unity.timeline\Tests\Editor\Unity.Timeline.Package.EditorTests.asmdef" />
     <None Include="Packages\com.unity.timeline\Tests\PlayMode\Unity.Timeline.Package.Tests.asmdef" />
+    <None Include="Packages\com.unity.xr.arcore\Editor\Unity.XR.ARCore.Editor.asmdef" />
+    <None Include="Packages\com.unity.xr.arcore\Runtime\Android\Resources\ARCoreShader.shader" />
+    <None Include="Packages\com.unity.xr.arcore\Runtime\Unity.XR.ARCore.asmdef" />
+    <None Include="Packages\com.unity.xr.arcore\Tests\Runtime\Unity.XR.ARCore.Runtime.Tests.asmdef" />
+    <None Include="Packages\com.unity.xr.arfoundation\Editor\Unity.XR.ARFoundation.Editor.asmdef" />
+    <None Include="Packages\com.unity.xr.arfoundation\Runtime\Unity.XR.ARFoundation.asmdef" />
+    <None Include="Packages\com.unity.xr.arfoundation\Tests\Runtime\Unity.XR.ARFoundation.Runtime.Tests.asmdef" />
+    <None Include="Packages\com.unity.xr.arkit\Editor\Unity.XR.ARKit.Editor.asmdef" />
+    <None Include="Packages\com.unity.xr.arkit\Editor\csc.rsp" />
+    <None Include="Packages\com.unity.xr.arkit\Runtime\Unity.XR.ARKit.asmdef" />
+    <None Include="Packages\com.unity.xr.arkit\Runtime\iOS\Resources\ARKitShader.shader" />
+    <None Include="Packages\com.unity.xr.arkit\Tests\Runtime\Unity.XR.ARKit.Runtime.Tests.asmdef" />
+    <None Include="Packages\com.unity.xr.arsubsystems\Editor\InternalBridge\Unity.InternalAPIEditorBridge.005.asmdef" />
+    <None Include="Packages\com.unity.xr.arsubsystems\Editor\Unity.XR.ARSubsystems.Editor.asmdef" />
+    <None Include="Packages\com.unity.xr.arsubsystems\Runtime\Unity.XR.ARSubsystems.asmdef" />
+    <None Include="Packages\com.unity.xr.arsubsystems\Tests\Runtime\Unity.XR.ARSubsystems.Runtime.Tests.asmdef" />
     <None Include="Packages\com.unity.xr.legacyinputhelpers\Editor\LegacyInputHelpersEditor.asmdef" />
     <None Include="Packages\com.unity.xr.legacyinputhelpers\Editor\TrackedPoseDriver\UnityEditor.SpatialTracking.asmdef" />
     <None Include="Packages\com.unity.xr.legacyinputhelpers\Runtime\LegacyInputHelpers.asmdef" />
