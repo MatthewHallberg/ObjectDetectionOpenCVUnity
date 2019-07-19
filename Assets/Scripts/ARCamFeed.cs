@@ -11,19 +11,24 @@ public class ARCamFeed : MonoBehaviour {
     [SerializeField]
     public ARCameraManager arCameraManager;
 
+    [SerializeField]
+    public ARCameraBackground arCameraBackground;
+
+    [SerializeField]
+    public GameObject uiImage;
+
     OpenCV openCV;
     Texture2D textureToSend;
-    bool texturesCreated;
 
     public void Init() {
         openCV = GetComponent<OpenCV>();
         arCameraManager.frameReceived += OnCameraFrameReceived;
+        uiImage.SetActive(false);
     }
 
+
     void OnDisable() {
-        if (texturesCreated) {
-            arCameraManager.frameReceived -= OnCameraFrameReceived;
-        }
+        arCameraManager.frameReceived -= OnCameraFrameReceived;
     }
 
     unsafe void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs) {
@@ -40,7 +45,7 @@ public class ARCamFeed : MonoBehaviour {
             outputDimensions = new Vector2Int(image.width / 3, image.height / 3),
 
             // Choose RGB format
-            outputFormat = openCV.sendFormat,
+            outputFormat = openCV.textureFormat,
 
             // Flip across the vertical axis (mirror image)
             transformation = CameraImageTransformation.MirrorX
@@ -68,15 +73,8 @@ public class ARCamFeed : MonoBehaviour {
         textureToSend.LoadRawTextureData(buffer);
         textureToSend.Apply();
 
-        if (!texturesCreated) {
-            texturesCreated = true;
-            //init textures here
-            openCV.CreateWritableTexture(textureToSend.width, textureToSend.height);
-            return;
-        }
-
         //process the image
-        openCV.ProcessImage(textureToSend);
+        openCV.ProcessImage(textureToSend, 0);
 
         // Done with our temporary data
         buffer.Dispose();

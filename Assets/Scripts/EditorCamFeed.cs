@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(OpenCV))]
 public class EditorCamFeed : MonoBehaviour {
@@ -6,7 +7,10 @@ public class EditorCamFeed : MonoBehaviour {
     OpenCV openCV;
     WebCamTexture webCamTex;
     Texture2D textureToSend;
-    bool texturesCreated;
+
+    [Header("UI")]
+    public RawImage camImage;
+    public AspectRatioFitter ratioFitter;
 
     public void Init() {
         openCV = GetComponent<OpenCV>();
@@ -17,15 +21,18 @@ public class EditorCamFeed : MonoBehaviour {
 #if UNITY_EDITOR
     private void Update() {
         if (webCamTex.width > 100) {
-            if (!texturesCreated) {
-                texturesCreated = true;
-                openCV.CreateWritableTexture(webCamTex.width, webCamTex.height);
-                textureToSend = new Texture2D(webCamTex.width, webCamTex.height, openCV.sendFormat, false);
+            if (textureToSend == null) {
+                textureToSend = new Texture2D(webCamTex.width, webCamTex.height, openCV.textureFormat, false);
+                //set UI cam image aspect ratio
+                float aspectRatio = (float)webCamTex.width / (float)webCamTex.height;
+                ratioFitter.aspectRatio = aspectRatio;
+                //set viewable cam texture
+                camImage.texture = textureToSend;
                 return;
             }
             textureToSend.SetPixels32(webCamTex.GetPixels32());
             textureToSend.Apply();
-            openCV.ProcessImage(textureToSend);
+            openCV.ProcessImage(textureToSend, 180);
         }
     }
 #endif
